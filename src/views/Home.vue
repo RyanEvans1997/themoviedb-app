@@ -45,23 +45,39 @@
   
 
   <div class='categories'>
-    <h2 class='categoriesHeader'>Categories and Filters</h2>
+    <h2 class='categoriesHeader'>Categories &amp; Filters</h2>
 
     <ul class='categoriesList' v-for='category in categories' :key='category'>
-      <li v-for='genre in category' :key='genre'>
+      <li v-for='genre in category' :key='genre' style='cursor: pointer'>
+            <div v-if='genre.name === currentSortBy || genre.name === currentGenre' class='currentGenre' @click='getCategoryListItem'>
+              <router-link v-if='genre.name === currentSortBy' :to="{name: 'Home', params: {sortBy: genre.name}}">
+                {{genre.name + ' >'}}
+              </router-link>
+              <div v-else>
+                {{genre.name + ' >X'}}
+              </div>
+            </div>
+            <div v-else @click='getCategoryListItem'>
               {{genre.name}}
+            </div>
       </li>
     </ul>
   </div>
 
   <div class='moviesSection'>
-    <div class='formatMovies' v-for='(movie, index) in popularMovies.results' :key='movie'>
+    <div class='formatMovies' v-for='(movie, index) in sortByMovies.results' :key='movie' @mouseenter.self='toggleHover(index)' @mouseleave.self='toggleHover(index)' >
       <div class='formatMoviesHover' v-if='hover && currentlyShowing === index'>
         <p style='color:white;'>{{movie.release_date.slice(0,4)}} </p>
         <p style='color:white;'>{{movie.original_title}} </p>
-        <button class='goToMovieBtn'>Go To Movie</button>
+        <button class='goToMovieBtn'>
+          <router-link :to="{name: 'About', params: {id: movie.original_title, fullMovie: movie}}" style='color: #fff'>
+              Go To Movie
+            </router-link>
+          </button>
       </div>
-      <img :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path" alt="" style='width:100%' @mouseover='toggleHover(index)' @mouseleave='toggleHover(index)' :class="{ 'imgHover': hover && currentlyShowing === index}">
+      <div>
+      <img :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path" alt="" style='width:100%' :class="{ 'imgHover': hover && currentlyShowing === index}">
+      </div>
     </div>
   </div>
 
@@ -72,10 +88,11 @@
 
 <script>
 // @ is an alias to /src
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, onUpdated } from 'vue'
 import env from '@/env.js'
 import axios from 'axios'
 import StarRating from 'vue-star-rating'
+import { useRoute } from 'vue-router'
 
 export default {
   name: 'Home',
@@ -91,6 +108,15 @@ export default {
     let hamburgerOpen = ref(true)
     let hover = ref(false)
     let currentlyShowing = ref(null)
+    let currentSortBy = ref('Popular')
+    let currentGenre = ref('All Movies')
+    let sortBy = ref('')
+    let sortByMovies = ref([])
+  
+    const route = useRoute()
+    // console.log(route.params)
+
+    sortBy.value = route.params.sortBy;
 
     function toggleHover (index) {
         hover.value = !hover.value
@@ -101,35 +127,88 @@ export default {
       hamburgerOpen.value = !hamburgerOpen.value
     }
 
+    function getCategoryListItem(event) {
+      if(event.target.innerText === 'Popular' || event.target.innerText === 'Top Rated' ||
+      event.target.innerText === 'Upcoming') {
+        // console.log('Clicked sort')
+        currentSortBy.value = event.target.innerText
+        // console.log(currentSortBy.value)
+        // console.log(sortByRequest.value)
+        getCurrentSortBy()
+        getNewSortBy()
+      } else {
+        // console.log('Clicked genre')
+        currentGenre.value = event.target.innerText
+      }
+    }
+
+    function getNewSortBy() {
+      axios.all([categoriesRequest, sortByRequest])
+      .then(axios.spread((data1, data2) => {
+        // console.log(data1.data)
+        console.log(data2.data)
+        sortByMovies.value = data2.data
+
+        firstMovie.value = sortByMovies.value.results[0]
+
+        firstMovieImg.value = 'https://image.tmdb.org/t/p/original/' + sortByMovies.value.results[0].poster_path
+        firstMovieRating.value = sortByMovies.value.results[0].vote_average
+
+        firstMovieYear.value = sortByMovies.value.results[0].release_date.slice(0, 4)     
+      }))
+      .catch(error => console.log(error))
+    }
+
 
     let categories = ref([])
     let categoriesURL = `https://api.themoviedb.org/3/genre/movie/list?api_key=${env.apikey}&language=en-US`
     let categoriesRequest = axios.get(categoriesURL)
 
-    let popularMovies = ref([])
+    let sortByRequest = ref([])
+
     let popularMoviesURL = `https://api.themoviedb.org/3/movie/popular?api_key=${env.apikey}&language=en-US&page=1`
-    let popularMoviesRequest = axios.get(popularMoviesURL)
+    // let popularMoviesRequest = axios.get(popularMoviesURL)
+
+    let topRatedMoviesURL = `https://api.themoviedb.org/3/movie/top_rated?api_key=${env.apikey}&language=en-US&page=1`
+    // let topRatedMoviesRequest = axios.get(topRatedMoviesURL)
+
+    let upcomingMoviesURL = `https://api.themoviedb.org/3/movie/upcoming?api_key=${env.apikey}&language=en-US&page=1`
+    // let upcomingMoviesRequest = axios.get(upcomingMoviesURL)
+
+    function getCurrentSortBy() {
+        if(currentSortBy.value == 'Popular') {
+        sortByRequest = axios.get(popularMoviesURL)
+        console.log('Getting popular')
+      } else if (currentSortBy.value == 'Top Rated') {
+        sortByRequest = axios.get(topRatedMoviesURL)
+        console.log('Getting Top Rated')
+      } else if (currentSortBy.value == 'Upcoming') {
+        sortByRequest = axios.get(upcomingMoviesURL)
+        console.log('Getting Upcoming')
+      }
+    }
+
+    getCurrentSortBy()
 
     onMounted(() => {
-        axios.all([categoriesRequest, popularMoviesRequest])
+        axios.all([categoriesRequest, sortByRequest])
         .then(axios.spread((data1, data2) => {
-          categories.value = data1.data
+          categories.value.push([{name: 'Popular'}, {name: 'Top Rated'}, {name: 'Upcoming'}].concat(data1.data.genres.slice(0, 11).concat({name: 'All Movies'})))
 
-          popularMovies.value = data2.data
+          sortByMovies.value = data2.data
 
-          firstMovie.value = popularMovies.value.results[0]
+          firstMovie.value = sortByMovies.value.results[0]
 
-          firstMovieImg.value = 'https://image.tmdb.org/t/p/original/' + popularMovies.value.results[0].poster_path
-          firstMovieRating.value = popularMovies.value.results[0].vote_average
+          firstMovieImg.value = 'https://image.tmdb.org/t/p/original/' + sortByMovies.value.results[0].poster_path
+          firstMovieRating.value = sortByMovies.value.results[0].vote_average
 
-          firstMovieYear.value = popularMovies.value.results[0].release_date.slice(0, 4)     
+          firstMovieYear.value = sortByMovies.value.results[0].release_date.slice(0, 4)     
         }))
         .catch(error => console.log(error))
     })
 
     return {
       categories,
-      popularMovies,
       firstMovie,
       firstMovieImg,
       firstMovieRating,
@@ -138,7 +217,11 @@ export default {
       toggleHamburger,
       hover,
       toggleHover,
-      currentlyShowing
+      currentlyShowing,
+      currentSortBy,
+      currentGenre,
+      getCategoryListItem,
+      sortByMovies
       }
   }
 }
@@ -309,9 +392,15 @@ div.categories {
 }
 
 .categoriesList {
-  width: 300px;
   list-style: none;
   columns: 3;
+  li {
+    padding-right: 0px;
+  }
+}
+
+.currentGenre {
+  color: blue;
 }
 
 .goToMovieBtn {
