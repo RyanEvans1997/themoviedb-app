@@ -15,9 +15,15 @@
       <span class='dot'></span>
       <i @click='toggleHamburger' class="fas fa-times fa-2x" style='float: right'></i>
       <ul style='text-align: right; float:right'>
-        <li>Popular</li>
-        <li>Top Rated</li>
-        <li>Upcoming</li>
+        <li>
+          Popular
+        </li>
+        <li>
+          Top Rated
+        </li>
+        <li>
+          Upcoming
+        </li>
       </ul>
   </div>
 
@@ -49,16 +55,18 @@
 
     <ul class='categoriesList' v-for='category in categories' :key='category'>
       <li v-for='genre in category' :key='genre' style='cursor: pointer'>
-            <div v-if='genre.name === currentSortBy || genre.name === currentGenre' class='currentGenre' @click='getCategoryListItem'>
-              <router-link v-if='genre.name === currentSortBy' :to="{name: 'Home', params: {sortBy: genre.name}}">
+            <div v-if='genre.name === currentSortBy || genre.name === currentGenre' class='currentGenre' >
+              <router-link v-if='genre.name === currentSortBy' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
                 {{genre.name + ' >'}}
               </router-link>
-              <div v-else>
+              <router-link v-else :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
                 {{genre.name + ' >X'}}
-              </div>
+              </router-link>
             </div>
-            <div v-else @click='getCategoryListItem'>
-              {{genre.name}}
+            <div v-else>
+              <router-link :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
+                {{genre.name}}
+              </router-link>
             </div>
       </li>
     </ul>
@@ -88,7 +96,7 @@
 
 <script>
 // @ is an alias to /src
-import { ref, onMounted, computed, onUpdated } from 'vue'
+import { ref, onMounted, onUpdated, watch} from 'vue'
 import env from '@/env.js'
 import axios from 'axios'
 import StarRating from 'vue-star-rating'
@@ -100,7 +108,7 @@ export default {
     StarRating,
   },
   setup() {
-
+    const route = useRoute()
     let firstMovie = ref('')
     let firstMovieImg = ref('')
     let firstMovieRating = ref('')
@@ -113,10 +121,12 @@ export default {
     let sortBy = ref('')
     let sortByMovies = ref([])
   
-    const route = useRoute()
     // console.log(route.params)
 
+    
+
     sortBy.value = route.params.sortBy;
+    // console.log(route.fullPath.slice(1))
 
     function toggleHover (index) {
         hover.value = !hover.value
@@ -127,18 +137,18 @@ export default {
       hamburgerOpen.value = !hamburgerOpen.value
     }
 
-    function getCategoryListItem(event) {
-      if(event.target.innerText === 'Popular' || event.target.innerText === 'Top Rated' ||
-      event.target.innerText === 'Upcoming') {
+    function getCategoryListItem() {
+      if(route.fullPath.slice(1) === 'popular' || route.fullPath.slice(1) === 'top-rated' ||
+      route.fullPath.slice(1) === 'upcoming') {
         // console.log('Clicked sort')
-        currentSortBy.value = event.target.innerText
+        currentSortBy.value = route.fullPath.slice(1)
         // console.log(currentSortBy.value)
         // console.log(sortByRequest.value)
         getCurrentSortBy()
         getNewSortBy()
       } else {
         // console.log('Clicked genre')
-        currentGenre.value = event.target.innerText
+        currentGenre.value = route.fullPath.slice(1)
       }
     }
 
@@ -146,8 +156,9 @@ export default {
       axios.all([categoriesRequest, sortByRequest])
       .then(axios.spread((data1, data2) => {
         // console.log(data1.data)
-        console.log(data2.data)
+        // console.log(data2.data)
         sortByMovies.value = data2.data
+        getCategoryListItem()
 
         firstMovie.value = sortByMovies.value.results[0]
 
@@ -176,13 +187,13 @@ export default {
     // let upcomingMoviesRequest = axios.get(upcomingMoviesURL)
 
     function getCurrentSortBy() {
-        if(currentSortBy.value == 'Popular') {
+        if(route.fullPath.slice(1) == 'popular') {
         sortByRequest = axios.get(popularMoviesURL)
         console.log('Getting popular')
-      } else if (currentSortBy.value == 'Top Rated') {
+      } else if (route.fullPath.slice(1) == 'top-rated') {
         sortByRequest = axios.get(topRatedMoviesURL)
         console.log('Getting Top Rated')
-      } else if (currentSortBy.value == 'Upcoming') {
+      } else if (route.fullPath.slice(1) == 'upcoming') {
         sortByRequest = axios.get(upcomingMoviesURL)
         console.log('Getting Upcoming')
       }
@@ -190,12 +201,17 @@ export default {
 
     getCurrentSortBy()
 
+    onUpdated(() => {
+      console.log('onUpdated')
+    })
+
     onMounted(() => {
         axios.all([categoriesRequest, sortByRequest])
         .then(axios.spread((data1, data2) => {
           categories.value.push([{name: 'Popular'}, {name: 'Top Rated'}, {name: 'Upcoming'}].concat(data1.data.genres.slice(0, 11).concat({name: 'All Movies'})))
 
           sortByMovies.value = data2.data
+          // console.log(currentSortBy.value)
 
           firstMovie.value = sortByMovies.value.results[0]
 
