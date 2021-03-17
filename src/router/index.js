@@ -7,7 +7,7 @@ const routes = [
     path: '/',
     name: 'HomeRedirect',
     component: Home,
-    redirect: '/Popular'
+    redirect: '/popular'
 
   },
   {

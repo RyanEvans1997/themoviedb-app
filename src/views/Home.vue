@@ -55,16 +55,14 @@
 
     <ul class='categoriesList' v-for='category in categories' :key='category'>
       <li v-for='genre in category' :key='genre' style='cursor: pointer'>
-            <div v-if='genre.name === currentSortBy || genre.name === currentGenre' class='currentGenre' >
-              <router-link v-if='genre.name === currentSortBy' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
+            <div class='currentGenre' >
+              <router-link v-if='genre.name === currentGenre' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
+                {{genre.name + ' >l'}}
+              </router-link>
+              <router-link v-else-if='genre.name.toLowerCase() === route.fullPath.slice(1) || ("top-rated" === route.fullPath.slice(1) && genre.name.toLowerCase() === "top rated")' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
                 {{genre.name + ' >'}}
               </router-link>
               <router-link v-else :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
-                {{genre.name + ' >X'}}
-              </router-link>
-            </div>
-            <div v-else>
-              <router-link :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
                 {{genre.name}}
               </router-link>
             </div>
@@ -96,7 +94,7 @@
 
 <script>
 // @ is an alias to /src
-import { ref, onMounted, onUpdated, watch} from 'vue'
+import { ref, onMounted, onUpdated} from 'vue'
 import env from '@/env.js'
 import axios from 'axios'
 import StarRating from 'vue-star-rating'
@@ -116,17 +114,20 @@ export default {
     let hamburgerOpen = ref(true)
     let hover = ref(false)
     let currentlyShowing = ref(null)
-    let currentSortBy = ref('Popular')
+    let currentSortBy = ref(route.fullPath.slice(1))
     let currentGenre = ref('All Movies')
     let sortBy = ref('')
+    let sortByFilters = ref(['popular', 'top rated', 'upcoming'])
     let sortByMovies = ref([])
+    let sortByRequest = ref([])
+    let categories = ref([])
+    let categoriesURL = `https://api.themoviedb.org/3/genre/movie/list?api_key=${env.apikey}&language=en-US`
+    let categoriesRequest = axios.get(categoriesURL)
+    let popularMoviesURL = `https://api.themoviedb.org/3/movie/popular?api_key=${env.apikey}&language=en-US&page=1`
+    let topRatedMoviesURL = `https://api.themoviedb.org/3/movie/top_rated?api_key=${env.apikey}&language=en-US&page=1`
+    let upcomingMoviesURL = `https://api.themoviedb.org/3/movie/upcoming?api_key=${env.apikey}&language=en-US&page=1`
   
-    // console.log(route.params)
-
-    
-
     sortBy.value = route.params.sortBy;
-    // console.log(route.fullPath.slice(1))
 
     function toggleHover (index) {
         hover.value = !hover.value
@@ -140,17 +141,29 @@ export default {
     function getCategoryListItem() {
       if(route.fullPath.slice(1) === 'popular' || route.fullPath.slice(1) === 'top-rated' ||
       route.fullPath.slice(1) === 'upcoming') {
-        // console.log('Clicked sort')
         currentSortBy.value = route.fullPath.slice(1)
-        // console.log(currentSortBy.value)
-        // console.log(sortByRequest.value)
         getCurrentSortBy()
         getNewSortBy()
       } else {
-        // console.log('Clicked genre')
         currentGenre.value = route.fullPath.slice(1)
       }
     }
+
+    function getCurrentSortBy() {
+        if(route.fullPath.slice(1) == 'popular') {
+        sortByRequest = axios.get(popularMoviesURL)
+        // console.log('Getting popular')
+      } else if (route.fullPath.slice(1) == 'top-rated') {
+        sortByRequest = axios.get(topRatedMoviesURL)
+        // console.log('Getting Top Rated')
+      } else if (route.fullPath.slice(1) == 'upcoming') {
+        sortByRequest = axios.get(upcomingMoviesURL)
+        // console.log('Getting Upcoming')
+      }
+      currentSortBy.value = route.fullPath.slice(1)
+    }
+
+    getCurrentSortBy()
 
     function getNewSortBy() {
       axios.all([categoriesRequest, sortByRequest])
@@ -170,48 +183,12 @@ export default {
       .catch(error => console.log(error))
     }
 
-
-    let categories = ref([])
-    let categoriesURL = `https://api.themoviedb.org/3/genre/movie/list?api_key=${env.apikey}&language=en-US`
-    let categoriesRequest = axios.get(categoriesURL)
-
-    let sortByRequest = ref([])
-
-    let popularMoviesURL = `https://api.themoviedb.org/3/movie/popular?api_key=${env.apikey}&language=en-US&page=1`
-    // let popularMoviesRequest = axios.get(popularMoviesURL)
-
-    let topRatedMoviesURL = `https://api.themoviedb.org/3/movie/top_rated?api_key=${env.apikey}&language=en-US&page=1`
-    // let topRatedMoviesRequest = axios.get(topRatedMoviesURL)
-
-    let upcomingMoviesURL = `https://api.themoviedb.org/3/movie/upcoming?api_key=${env.apikey}&language=en-US&page=1`
-    // let upcomingMoviesRequest = axios.get(upcomingMoviesURL)
-
-    function getCurrentSortBy() {
-        if(route.fullPath.slice(1) == 'popular') {
-        sortByRequest = axios.get(popularMoviesURL)
-        console.log('Getting popular')
-      } else if (route.fullPath.slice(1) == 'top-rated') {
-        sortByRequest = axios.get(topRatedMoviesURL)
-        console.log('Getting Top Rated')
-      } else if (route.fullPath.slice(1) == 'upcoming') {
-        sortByRequest = axios.get(upcomingMoviesURL)
-        console.log('Getting Upcoming')
-      }
-    }
-
-    getCurrentSortBy()
-
-    onUpdated(() => {
-      console.log('onUpdated')
-    })
-
     onMounted(() => {
         axios.all([categoriesRequest, sortByRequest])
         .then(axios.spread((data1, data2) => {
           categories.value.push([{name: 'Popular'}, {name: 'Top Rated'}, {name: 'Upcoming'}].concat(data1.data.genres.slice(0, 11).concat({name: 'All Movies'})))
 
           sortByMovies.value = data2.data
-          // console.log(currentSortBy.value)
 
           firstMovie.value = sortByMovies.value.results[0]
 
@@ -224,6 +201,7 @@ export default {
     })
 
     return {
+      route,
       categories,
       firstMovie,
       firstMovieImg,
@@ -237,7 +215,8 @@ export default {
       currentSortBy,
       currentGenre,
       getCategoryListItem,
-      sortByMovies
+      sortByMovies,
+      sortByFilters
       }
   }
 }
@@ -256,12 +235,45 @@ body {
   color: #fff; 
 }
 
-// img:hover {
-//   filter: contrast(30%) brightness(60%) grayscale(100%);
-// }
+.categoriesHeader {
+  font-size: 48px;
+  font-weight: normal;
+  width: 300px;
+}
 
-.imgHover {
-  filter: contrast(30%) brightness(60%) grayscale(100%);
+.categoriesList {
+  list-style: none;
+  columns: 3;
+  li {
+    padding-right: 0px;
+  }
+}
+
+.currentGenre {
+  color: blue;
+}
+
+div.categories {
+  background-color: #fff;
+  color: #1c212e;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 300;
+  width: 66%;
+  margin-left: 16.65%;
+  padding: 20px 20% 20px 0px;
+}
+
+.dot {
+  height: 400px;
+  width: 400px;
+  top: -150px;
+  right: -150px;
+  background-color: #274D74;
+  border-radius: 50%;
+  position: absolute;
+  z-index: -1000;
+  opacity: 0.8;
 }
 
 .firstMoviePoster {
@@ -291,6 +303,64 @@ body {
   opacity: 0.4;
 }
 
+.formatMovies {
+  position: relative;
+  width: 25%;
+  float: left;
+  padding: 15px;
+}
+
+.formatMoviesHover {
+  position: absolute;
+  width: 200px;
+  left: 18%;
+  top: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100px;
+  justify-content: space-between;
+  z-index: 1000;
+}
+
+
+.hamburger {
+  color: #fff;
+  position: absolute;
+  right: 2%;
+  top: 5%;
+  width: 100px;
+  
+  ul {
+    list-style-type: none;
+  }
+
+  li {
+    padding: 10px;
+  }
+}
+
+.goToMovieBtn {
+  background: none;
+  border: #f3b814 1px solid;
+  padding: 5px;
+  border-radius: 4px;
+  color: #f3b814;
+}
+
+.hamburger:hover {
+  cursor: pointer;
+}
+
+.imgHover {
+  filter: contrast(30%) brightness(60%) grayscale(100%);
+}
+
+.imgHover {
+  background-color: #fff;
+  width: 500px;
+}
+
 .ratingAndBtn {
   display: flex;
   align-items: center;
@@ -312,27 +382,6 @@ body {
   }
 }
 
-.hamburger {
-  color: #fff;
-  position: absolute;
-  right: 2%;
-  top: 5%;
-  width: 100px;
-  
-  ul {
-    list-style-type: none;
-  }
-
-  li {
-    padding: 10px;
-  }
-
-}
-
-.hamburger:hover {
-  cursor: pointer;
-}
-
 .topImage {
   width: 30%;
   height: 30%;
@@ -343,88 +392,12 @@ body {
   width: 200px;
   height: 200px;
 }
-
-.dot {
-  height: 400px;
-  width: 400px;
-  top: -150px;
-  right: -150px;
-  background-color: #274D74;
-  border-radius: 50%;
-  position: absolute;
-  z-index: -1000;
-  opacity: 0.8;
-}
-
 .movieYear {
   margin-top: 50px;
-}
-
-.formatMovies {
-  position: relative;
-  width: 25%;
-  float: left;
-  padding: 15px;
-}
-
-.formatMoviesHover {
-  position: absolute;
-  width: 200px;
-  left: 18%;
-  top: 150px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100px;
-  justify-content: space-between;
-  z-index: 1000;
-}
-
-div.categories {
-  background-color: #fff;
-  color: #1c212e;
-  display: flex;
-  justify-content: space-between;
-  font-weight: 300;
-  width: 66%;
-  margin-left: 16.65%;
-  padding: 20px 20% 20px 0px;
 }
 
 .moviesSection {
   width: 66%;
   margin-left: 16.65%;
 }
-
-.imgHover {
-  background-color: #fff;
-  width: 500px;
-}
-
-.categoriesHeader {
-  font-size: 48px;
-  font-weight: normal;
-  width: 300px;
-}
-
-.categoriesList {
-  list-style: none;
-  columns: 3;
-  li {
-    padding-right: 0px;
-  }
-}
-
-.currentGenre {
-  color: blue;
-}
-
-.goToMovieBtn {
-  background: none;
-  border: #f3b814 1px solid;
-  padding: 5px;
-  border-radius: 4px;
-  color: #f3b814;
-}
-
 </style>
