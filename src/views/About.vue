@@ -27,7 +27,7 @@
   </div>
 
   <div class='movieInfo'>
-    <img :src="baseImageURL + getMovie.poster_path" alt="" style='height: 300px; width: 300px; float: left; margin-right: 20px'>
+    <img :src="baseImageURL + getMovie.poster_path" alt="" style='height: 500px; width: 300px; float: left; margin-right: 20px'>
     <p style='font-weight: bold; font-size: 38px;'>{{getMovie.original_title}}</p>
     <i style='float: left; color: orange;' class="fas fa-star fa-3x"></i>
     <p>{{getMovie.vote_average}}</p>
@@ -44,24 +44,32 @@
     <p>{{getMovie.overview}}</p>
   </div>
 
-  <h3>Cast</h3>
-  <p v-for='castMember in getCredits.cast' :key='castMember'>
-    cast original name: {{castMember.original_name}}
-    <br />
-    cast profile path: {{baseImageURL + castMember.profile_path}}
-  </p>
-  <h3>Crew</h3>
-  <p v-for='crewMember in getCredits.crew' :key='crewMember'>
-    {{crewMember}}
-    crew original name: {{crewMember.original_name}}
-    <br />
-    crew profile path: {{baseImageURL + crewMember.profile_path}}
-  </p>
+  <div style='margin-bottom: 20px'>
+    <h3 style='float: left; display: inline-block; margin-left: 15px'>Cast</h3>
+    <h3 style='margin-left: -600px; display: inline-block'>Crew</h3>
+  </div>
 
-  <h2>Reccommended Info</h2>
-  <p v-for='movie in getReccommended.results' :key='movie'>
-    poster path: {{baseImageURL + movie.poster_path}}
-  </p>
+
+  <div v-for='castMember in getMovieCast' :key='castMember' class='castMembers'>
+    <p style='position: absolute; bottom: 28px; right: auto;'>{{castMember.original_name}}</p>
+    <p style='position: absolute; bottom: 5px; right: auto;'>{{castMember.character}}</p>
+    <br />
+    <img :src="baseImageURL + castMember.profile_path" alt="" style='width: 150px; height: 200px;'>
+  </div>
+
+ 
+  <div v-for='crewMember in getMovieCrew' :key='crewMember' class='crewMembers'>
+    <p style='position: absolute; bottom: 8px; right: auto;'>{{crewMember.original_name}}</p>
+    <br />
+    <img :src="baseImageURL + crewMember.profile_path" alt="" style='width: 150px; height: 200px;'>
+  </div>
+
+  <br>
+
+  <h2 style='margin-top: 250px; text-align: left; margin-left: 15px;'>Reccommended</h2>
+  <div v-for='movie in getPartialReccomended' :key='movie' class='partialReccomended'>
+    <img :src="baseImageURL + movie.poster_path" alt="" style='width: 200px; height: 300px;'>
+  </div>
   </div>
 </template>
 
@@ -90,6 +98,10 @@ export default {
     const getReccomendedRequest = axios.get(getReccommendedURL.value)
     const getMovieYear = ref('')
     const getMovieRunning = ref(0)
+    const getMovieCast = ref({})
+    const getMovieCastCharacter = ref({})
+    const getMovieCrew = ref({})
+    const getPartialReccomended = ref({})
 
     onMounted(() => {
       axios.all([getMoviesDetailsRequest, getCreditsRequest, getReccomendedRequest])
@@ -100,6 +112,11 @@ export default {
         getMovie.value = data1.data
         getCredits.value = data2.data
         getReccommended.value = data3.data
+
+        getMovieCast.value = getCredits.value.cast.slice(0, 4)
+        getMovieCastCharacter.value = getCredits.value.cast.character
+        getMovieCrew.value = getCredits.value.crew.slice(0, 3)
+        getPartialReccomended.value = getReccommended.value.results.slice(0, 6)
 
         getMovieYear.value = getMovie.value.release_date.slice(0,4)
         getMovieRunning.value = `${Math.floor(getMovie.value.runtime / 60)}h ${getMovie.value.runtime % 60} m`
@@ -120,7 +137,11 @@ export default {
       toggleHamburger,
       hamburgerOpen,
       getMovieYear,
-      getMovieRunning
+      getMovieRunning,
+      getMovieCast,
+      getMovieCrew,
+      getPartialReccomended,
+      getMovieCastCharacter
     }
   }
 }
@@ -137,7 +158,32 @@ p {
 }
 
 .about {
-  margin-left: 20%
+  margin-left: 10%;
+  width: 90%;
+}
+
+.castMembers {
+  display: flex; 
+  float: left;
+  width: 170px;
+  justify-content: space-around;
+  position: relative;
+}
+
+.crewMembers {
+  display: flex; 
+  float: left;
+  width: 170px;
+  justify-content: space-around;
+  position: relative;
+}
+
+.partialReccomended {
+  display: flex; 
+  float: left;
+  width: 230px;
+  justify-content: space-around;
+  position: relative;
 }
 
 .firstMoviePosterBG {
@@ -149,6 +195,7 @@ p {
 .movieInfo {
   display: inline-block;
   margin-top: 25%;
+  margin-bottom: 5%;
 }
 
 .hamburger {
