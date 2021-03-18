@@ -8,12 +8,11 @@
 <div class='about'>
 
  <div v-if='hamburgerOpen' class='hamburger'>
-    <i @click='toggleHamburger' class="fas fa-bars fa-2x" style='float: right'></i>
+    <i @click='toggleHamburger' class="fas fa-bars fa-2x" style='position: absolute; bottom: 55%;'></i>
   </div>
-<div v-else class='hamburger'>
-      <span class='dot'></span>
-      <i @click='toggleHamburger' class="fas fa-times fa-2x" style='float: right'></i>
-      <ul style='text-align: right; float:right'>
+<div v-else class='hamburger' style='background-color: #274D74;'>
+      <i @click='toggleHamburger' class="fas fa-times fa-2x" style='position: absolute; bottom: 55%;'></i>
+      <ul style='text-align: right; position: absolute; bottom: 18%; left: 30%'>
         <li>
           Popular
         </li>
@@ -29,44 +28,65 @@
   <div class='movieInfo'>
     <img :src="baseImageURL + getMovie.poster_path" alt="" style='height: 500px; width: 300px; float: left; margin-right: 20px'>
     <p style='font-weight: bold; font-size: 38px;'>{{getMovie.original_title}}</p>
-    <i style='float: left; color: orange;' class="fas fa-star fa-3x"></i>
-    <p>{{getMovie.vote_average}}</p>
-    <p>{{getMovie.vote_count}} votes</p>
+    <i style='float: left; color: orange; margin-right: 10px' class="fas fa-star fa-3x"></i>
+    <p style='color: #f3b814; font-size: 28px'>{{getMovie.vote_average}}</p>
+    <p style='color: #8a6a11'>{{getMovie.vote_count}} votes</p>
     <br>
-    <p>{{getMovieYear}}</p>
-    <p>{{getMovieRunning}}</p>
-    <p>{{getMovie.original_language}}</p>
-    <p v-for='genre in getMovie.genres' :key='genre' style='display: inline; float: left'>
-      {{genre.name}}, &nbsp;
-    </p>
+    <ul class='movieDetails'>
+      <li class='listSpacing' >
+        {{getMovieYear}}
+      </li>
+      <li class='listSpacing' >
+        {{getMovieRunning}}
+      </li>
+      <li class='listSpacing'>
+        {{getMovie.original_language}}
+      </li>
+      <div style='display: inline; margin-left: 15px'>
+        <div style='display: inline;' v-for='(genre, index) in getMovie.genres' :key='genre'>
+        <li v-if='index > 0'>
+          , &nbsp; {{genre.name}} 
+        </li>
+        <li v-else>
+           {{genre.name}}
+        </li>
+      </div>
+      </div>
+
+      </ul>
     <br>
         <br>
     <p>{{getMovie.overview}}</p>
   </div>
 
   <div style='margin-bottom: 20px'>
-    <h3 style='float: left; display: inline-block; margin-left: 15px'>Cast</h3>
-    <h3 style='margin-left: -600px; display: inline-block'>Crew</h3>
+    <h3 style='float: left; display: inline-block; margin-left: 15px; font-weight: 300; font-size: 28px'>Cast</h3>
+    <h3 style='margin-left: -280px; display: inline-block; font-weight: 300; font-size: 28px'>Crew</h3>
   </div>
 
 
   <div v-for='castMember in getMovieCast' :key='castMember' class='castMembers'>
-    <p style='position: absolute; bottom: 28px; right: auto;'>{{castMember.original_name}}</p>
-    <p style='position: absolute; bottom: 5px; right: auto;'>{{castMember.character}}</p>
+    <p style='position: absolute; bottom: 28px; right: auto; z-index: 1'>{{castMember.original_name}}</p>
+    <p style='position: absolute; bottom: 5px; right: auto; z-index: 1'>{{castMember.character}}</p>
     <br />
-    <img :src="baseImageURL + castMember.profile_path" alt="" style='width: 150px; height: 200px;'>
+    <img :src="baseImageURL + castMember.profile_path" alt="" style='width: 150px; height: 200px;' class='ImageFilter'>
   </div>
 
  
   <div v-for='crewMember in getMovieCrew' :key='crewMember' class='crewMembers'>
-    <p style='position: absolute; bottom: 8px; right: auto;'>{{crewMember.original_name}}</p>
+    <p style='position: absolute; bottom: 8px; right: auto; z-index: 1'>{{crewMember.original_name}}</p>
     <br />
-    <img :src="baseImageURL + crewMember.profile_path" alt="" style='width: 150px; height: 200px;'>
+    <img v-if='baseImageURL + crewMember.profile_path == "https://image.tmdb.org/t/p/original/null" ' src="https://inspireddentalcare.co.uk/wp-content/uploads/2016/05/Facebook-default-no-profile-pic.jpg" alt="" style='width: 150px; height: 200px' class='ImageFilter'>
+
+    <img v-else :src="baseImageURL + crewMember.profile_path" alt="" style='width: 150px; height: 200px;' class='ImageFilter'>
+
+    <!-- https://image.tmdb.org/t/p/original/null -->
+
   </div>
 
   <br>
 
-  <h2 style='margin-top: 250px; text-align: left; margin-left: 15px;'>Reccommended</h2>
+  <h1 style='margin-top: 250px; text-align: left; margin-left: 15px; font-weight: 300; margin-bottom: 10px'>Reccommended Movies</h1>
   <div v-for='movie in getPartialReccomended' :key='movie' class='partialReccomended'>
     <img :src="baseImageURL + movie.poster_path" alt="" style='width: 200px; height: 300px;'>
   </div>
@@ -118,8 +138,11 @@ export default {
         getMovieCrew.value = getCredits.value.crew.slice(0, 3)
         getPartialReccomended.value = getReccommended.value.results.slice(0, 6)
 
+
+
         getMovieYear.value = getMovie.value.release_date.slice(0,4)
-        getMovieRunning.value = `${Math.floor(getMovie.value.runtime / 60)}h ${getMovie.value.runtime % 60} m`
+        getMovieRunning.value = `${Math.floor(getMovie.value.runtime / 60)}h ${getMovie.value.runtime % 60} mins`
+
       }))
       .catch(error => console.log(error))
     })
@@ -141,7 +164,7 @@ export default {
       getMovieCast,
       getMovieCrew,
       getPartialReccomended,
-      getMovieCastCharacter
+      getMovieCastCharacter,
     }
   }
 }
@@ -152,9 +175,19 @@ export default {
   color: #fff;
 }
 
+html,body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 p {
   padding: auto;
   text-align: left;
+  font-size: 15px;
+}
+
+.movieDetails li {
+  display: inline;
 }
 
 .about {
@@ -178,6 +211,10 @@ p {
   position: relative;
 }
 
+.ImageFilter {
+  filter: contrast(60%) brightness(60%);
+}
+
 .partialReccomended {
   display: flex; 
   float: left;
@@ -192,7 +229,13 @@ p {
   background-size: cover;
 }
 
+.listSpacing {
+  padding: 0px 10px;
+  border-right: 0.1px solid #a3a2a2;
+}
+
 .movieInfo {
+  text-align: left;
   display: inline-block;
   margin-top: 25%;
   margin-bottom: 5%;
@@ -201,9 +244,12 @@ p {
 .hamburger {
   color: #fff;
   position: absolute;
-  right: 2%;
-  top: 5%;
-  width: 100px;
+  left: 89%;
+  top: -10%;
+  opacity: 0.8;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
   
   ul {
     list-style-type: none;
