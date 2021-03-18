@@ -11,7 +11,7 @@
   </div>
 <div v-else class='hamburger' style='background-color: #274D74;'>
       <i @click='toggleHamburger' class="fas fa-times fa-2x" style='position: absolute; bottom: 55%;'></i>
-      <ul style='text-align: right; position: absolute; bottom: 18%; left: 30%; color: #fff;'>
+      <ul style='text-align: right; position: absolute; bottom: 18%; left: 22%; color: #fff;'>
         <li>
           <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'popular'.replace(' ', '-')}}">
             Popular
@@ -214,8 +214,9 @@ h1 {
 }
 
 .about {
-  margin-left: 10%;
-  width: 90%;
+  margin-left: 16.66%;
+  width: 66%;
+  max-width: 1264px;
 }
 
 .castCrewMembers {
