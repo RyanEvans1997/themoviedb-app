@@ -76,7 +76,7 @@
         <p style='color:white;'>{{movie.release_date.slice(0,4)}} </p>
         <p style='color:white;'>{{movie.original_title}} </p>
         <button class='goToMovieBtn'>
-          <router-link :to="{name: 'About', params: {id: movie.original_title, fullMovie: movie}}" style='color: #fff'>
+          <router-link :to="{name: 'About', params: {id: movie.id, fullMovie: movie}}" style='color: #f3b814'>
               Go To Movie
             </router-link>
           </button>
