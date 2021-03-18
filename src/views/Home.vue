@@ -8,21 +8,25 @@
   ">   
   </div>
   <div v-if='hamburgerOpen' class='hamburger'>
-    <i @click='toggleHamburger' class="fas fa-bars fa-2x" style='float: right'></i>
+    <i @click='toggleHamburger' class="fas fa-bars fa-2x" style='position: absolute; bottom: 55%;'></i>
   </div>
-
-  <div v-else class='hamburger'>
-      <span class='dot'></span>
-      <i @click='toggleHamburger' class="fas fa-times fa-2x" style='float: right'></i>
-      <ul style='text-align: right; float:right'>
+<div v-else class='hamburger' style='background-color: #274D74;'>
+      <i @click='toggleHamburger' class="fas fa-times fa-2x" style='position: absolute; bottom: 55%;'></i>
+      <ul style='text-align: right; position: absolute; bottom: 18%; left: 30%'>
         <li>
-          Popular
+          <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'popular'.replace(' ', '-')}}">
+            Popular
+          </router-link>
         </li>
         <li>
-          Top Rated
+         <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'top rated'.replace(' ', '-')}}">
+            Top Rated
+          </router-link>
         </li>
         <li>
-          Upcoming
+          <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'upcoming'.replace(' ', '-')}}">
+            Upcoming
+          </router-link>
         </li>
       </ul>
   </div>
@@ -264,18 +268,6 @@ div.categories {
   padding: 20px 20% 20px 0px;
 }
 
-.dot {
-  height: 400px;
-  width: 400px;
-  top: -150px;
-  right: -150px;
-  background-color: #274D74;
-  border-radius: 50%;
-  position: absolute;
-  z-index: -1000;
-  opacity: 0.8;
-}
-
 .firstMoviePoster {
   height: 450px;
   display: flex;
@@ -323,13 +315,23 @@ div.categories {
   z-index: 1000;
 }
 
+.goToMovieBtn {
+  background: none;
+  border: #f3b814 1px solid;
+  padding: 5px;
+  border-radius: 4px;
+  color: #f3b814;
+}
 
 .hamburger {
   color: #fff;
   position: absolute;
-  right: 2%;
-  top: 5%;
-  width: 100px;
+  left: 89%;
+  top: -10%;
+  opacity: 0.8;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
   
   ul {
     list-style-type: none;
@@ -338,14 +340,6 @@ div.categories {
   li {
     padding: 10px;
   }
-}
-
-.goToMovieBtn {
-  background: none;
-  border: #f3b814 1px solid;
-  padding: 5px;
-  border-radius: 4px;
-  color: #f3b814;
 }
 
 .hamburger:hover {

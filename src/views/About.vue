@@ -6,21 +6,26 @@
   ">   
 </div>
 <div class='about'>
-
- <div v-if='hamburgerOpen' class='hamburger'>
+  <div v-if='hamburgerOpen' class='hamburger'>
     <i @click='toggleHamburger' class="fas fa-bars fa-2x" style='position: absolute; bottom: 55%;'></i>
   </div>
 <div v-else class='hamburger' style='background-color: #274D74;'>
       <i @click='toggleHamburger' class="fas fa-times fa-2x" style='position: absolute; bottom: 55%;'></i>
       <ul style='text-align: right; position: absolute; bottom: 18%; left: 30%'>
         <li>
-          Popular
+          <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'popular'.replace(' ', '-')}}">
+            Popular
+          </router-link>
         </li>
         <li>
-          Top Rated
+         <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'top rated'.replace(' ', '-')}}">
+            Top Rated
+          </router-link>
         </li>
         <li>
-          Upcoming
+          <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'upcoming'.replace(' ', '-')}}">
+            Upcoming
+          </router-link>
         </li>
       </ul>
   </div>
@@ -59,37 +64,43 @@
     <p>{{getMovie.overview}}</p>
   </div>
 
-  <div style='margin-bottom: 20px'>
-    <h3 style='float: left; display: inline-block; margin-left: 15px; font-weight: 300; font-size: 28px'>Cast</h3>
-    <h3 style='margin-left: -280px; display: inline-block; font-weight: 300; font-size: 28px'>Crew</h3>
+  <div class='castCrewLabels'>
+    <h3>Cast</h3>
+    <h3>Crew</h3>
   </div>
 
+  <div class='castCrewMembers'>
 
-  <div v-for='castMember in getMovieCast' :key='castMember' class='castMembers'>
-    <p style='position: absolute; bottom: 28px; right: auto; z-index: 1'>{{castMember.original_name}}</p>
-    <p style='position: absolute; bottom: 5px; right: auto; z-index: 1'>{{castMember.character}}</p>
-    <br />
-    <img :src="baseImageURL + castMember.profile_path" alt="" style='width: 150px; height: 200px;' class='ImageFilter'>
-  </div>
+    <div v-for='castMember in getMovieCast' :key='castMember' class='castMember'>
 
- 
-  <div v-for='crewMember in getMovieCrew' :key='crewMember' class='crewMembers'>
-    <p style='position: absolute; bottom: 8px; right: auto; z-index: 1'>{{crewMember.original_name}}</p>
-    <br />
-    <img v-if='baseImageURL + crewMember.profile_path == "https://image.tmdb.org/t/p/original/null" ' src="https://inspireddentalcare.co.uk/wp-content/uploads/2016/05/Facebook-default-no-profile-pic.jpg" alt="" style='width: 150px; height: 200px' class='ImageFilter'>
+    <div class='pContainer'>
+    <p>{{castMember.original_name}}</p>
+    <p style='font-weight: 300'>{{castMember.character}}</p>
+    </div>
 
-    <img v-else :src="baseImageURL + crewMember.profile_path" alt="" style='width: 150px; height: 200px;' class='ImageFilter'>
+    <img v-if='baseImageURL + castMember.profile_path == "https://image.tmdb.org/t/p/original/null"' src="https://inspireddentalcare.co.uk/wp-content/uploads/2016/05/Facebook-default-no-profile-pic.jpg" alt="" style='width: 200px; height: 300px;' class='ImageFilter'>
+    <img v-else :src="baseImageURL + castMember.profile_path" alt="" style='width: 200px; height: 300px;' class='ImageFilter'>
+    </div>
 
-    <!-- https://image.tmdb.org/t/p/original/null -->
+    <div v-for='crewMember in getMovieCrew' :key='crewMember' class='crewMember'>
+    <div class='pContainer'>
+      <p>{{crewMember.original_name}}</p>
+    </div>
+
+    <img v-if='baseImageURL + crewMember.profile_path == "https://image.tmdb.org/t/p/original/null"' src="https://inspireddentalcare.co.uk/wp-content/uploads/2016/05/Facebook-default-no-profile-pic.jpg" alt="" style='width: 200px; height: 300px;' class='ImageFilter'>
+    <img v-else :src="baseImageURL + crewMember.profile_path" alt="" style='width: 200px; height: 300px;' class='ImageFilter'>
+    </div>
 
   </div>
 
   <br>
 
-  <h1 style='margin-top: 250px; text-align: left; margin-left: 15px; font-weight: 300; margin-bottom: 10px'>Reccommended Movies</h1>
-  <div v-for='movie in getPartialReccomended' :key='movie' class='partialReccomended'>
-    <img :src="baseImageURL + movie.poster_path" alt="" style='width: 200px; height: 300px;'>
-  </div>
+  <div style='width: 100%; float: left;'>
+    <h1 style='margin-top: 5%; text-align: left; margin-left: 15px; font-weight: 300; margin-bottom: 10px'>Reccommended Movies</h1>
+    <div v-for='movie in getPartialReccomended' :key='movie' class='partialReccomended'>
+      <img :src="baseImageURL + movie.poster_path" alt="" style='width: 200px; height: 300px;'>
+    </div>
+    </div>
   </div>
 </template>
 
@@ -170,9 +181,10 @@ export default {
 }
 </script>
 
-<style>
+<style lang='scss'>
 * {
   color: #fff;
+  box-sizing: border-box;
 }
 
 html,body {
@@ -186,6 +198,10 @@ p {
   font-size: 15px;
 }
 
+.navBarLinks {
+  text-decoration: none;
+}
+
 .movieDetails li {
   display: inline;
 }
@@ -195,24 +211,46 @@ p {
   width: 90%;
 }
 
-.castMembers {
-  display: flex; 
-  float: left;
-  width: 170px;
-  justify-content: space-around;
-  position: relative;
+.castCrewMembers {
+  display: flex;
+  justify-content:  space-between;
+  width: 1600px;
 }
 
-.crewMembers {
-  display: flex; 
-  float: left;
-  width: 170px;
-  justify-content: space-around;
+.castMember {
   position: relative;
+  width: 200px;
+  color: white;
+}
+
+.castCrewLabels {
+  margin-bottom: 20px;
+  width: 742px; 
+  display: flex; 
+  justify-content: space-between;
+}
+
+.pContainer {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-around;
+    bottom: 10px;
+    left: 10px;
+    width: 180px;
+    height: 50px;
+    z-index: 1; 
+}
+
+.crewMember {
+  position: relative;
+  text-align: center;
+  color: white;
 }
 
 .ImageFilter {
-  filter: contrast(60%) brightness(60%);
+  filter: contrast(70%) brightness(60%);
 }
 
 .partialReccomended {
@@ -236,7 +274,9 @@ p {
 
 .movieInfo {
   text-align: left;
-  display: inline-block;
+  display: inline;
+  width: 100%;
+  float: left;
   margin-top: 25%;
   margin-bottom: 5%;
 }
