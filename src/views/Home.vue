@@ -1,12 +1,14 @@
 <template>
-  <div class='firstMoviePosterBG' :style="
-  {
-    backgroundImage: 'url(' + firstMovieImg + ')'
-  }
-  ">   
+  <div class='firstMoviePosterBG' 
+  :style="{
+    backgroundImage: 'url(' + firstMovieImg + ')', 
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    maxWidth: '2700px'
+  }">   
   </div>
 
-  <div class="home">
+  <div class="container">
 
   <div v-if='hamburgerOpen' class='hamburger'>
     <i @click='toggleHamburger' class="fas fa-bars fa-2x" style='position: absolute; bottom: 55%;'></i>
@@ -43,7 +45,7 @@
     <star-rating :rating="firstMovieRating / 2" :star-size="15" :read-only='true' :border-width='1' :increment='0.5' :show-rating='false'></star-rating>
 
   <button class='goToMovieBtn'>
-          <router-link :to="{name: 'About', params: {id: firstMovie.id, fullMovie: firstMovie}}" style='color: #f3b814; text-decoration: none'>
+          <router-link :to="{name: 'MovieDetails', params: {id: firstMovie.id, fullMovie: firstMovie}}" style='color: #f3b814; text-decoration: none'>
               Go To Movie
             </router-link>
           </button>
@@ -86,7 +88,7 @@
           <p>{{movie.release_date.slice(0,4)}} </p>
         <p>{{movie.original_title}} </p>
         <button class='goToMovieBtn'>
-        <router-link :to="{name: 'About', params: {id: movie.id, fullMovie: movie}}" style='color: #f3b814; text-decoration: none'>
+        <router-link :to="{name: 'MovieDetails', params: {id: movie.id, fullMovie: movie}}" style='color: #f3b814; text-decoration: none'>
               Go To Movie
           </router-link>
           </button>
@@ -253,10 +255,6 @@ a {
   font-weight: 400;
 }
 
-li {
-  margin: 2px 25px;
-}
-
 .categoriesHeader {
   font-size: 48px;
   font-weight: normal;
@@ -303,9 +301,8 @@ div.categories {
 
 .firstMoviePosterBG {
   position: fixed;
-  background-attachment: fixed;
-  height: 80%;
-  width: 100%;
+  height: 400px;
+  width: 2000px;
   background-position: center;
   z-index: -1000;
   opacity: 0.4;
@@ -360,8 +357,8 @@ div.categories {
 .hamburger {
   color: #fff;
   position: absolute;
-  left: 89%;
-  top: -10%;
+  right: -60px;
+  top: -80px;
   opacity: 0.8;
   width: 300px;
   height: 300px;
@@ -372,11 +369,12 @@ div.categories {
   }
 
   li {
-    padding: 10px;
+    padding: 8px;
+    margin: 2px 0px;
   }
 }
 
-.home {
+.container {
   margin-left: 16.66%;
   width: 66%;
   max-width: 1264px;
@@ -388,11 +386,6 @@ div.categories {
 
 .imgHover {
   filter: contrast(30%) brightness(60%) grayscale(100%);
-}
-
-.imgHover {
-  background-color: #fff;
-  width: 500px;
 }
 
 .ratingAndBtn {

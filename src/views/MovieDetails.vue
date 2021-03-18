@@ -5,7 +5,7 @@
   }
   ">   
 </div>
-<div class='about'>
+<div class='container'>
   <div v-if='hamburgerOpen' class='hamburger'>
     <i @click='toggleHamburger' class="fas fa-bars fa-2x" style='position: absolute; bottom: 55%;'></i>
   </div>
@@ -49,10 +49,10 @@
       </li>
       <div style='display: inline; margin-left: 15px'>
         <div style='display: inline;' v-for='(genre, index) in getMovie.genres' :key='genre'>
-        <li v-if='index > 0'>
+        <li v-if='index > 0' style='padding: 0'>
           , &nbsp; {{genre.name}} 
         </li>
-        <li v-else>
+        <li v-else style='padding: 0'>
            {{genre.name}}
         </li>
       </div>
@@ -79,7 +79,7 @@
     </div>
 
     <img v-if='baseImageURL + castMember.profile_path == "https://image.tmdb.org/t/p/original/null"' src="https://inspireddentalcare.co.uk/wp-content/uploads/2016/05/Facebook-default-no-profile-pic.jpg" alt="" style='width: 200px; height: 300px;' class='ImageFilter'>
-    <img v-else :src="baseImageURL + castMember.profile_path" alt="" style='width: 200px; height: 300px;' class='ImageFilter'>
+    <img v-else :src="baseImageURL + castMember.profile_path" alt="" class='ImageFilter'>
     </div>
 
     <div v-for='crewMember in getMovieCrew' :key='crewMember' class='crewMember'>
@@ -87,8 +87,8 @@
       <p>{{crewMember.original_name}}</p>
     </div>
 
-    <img v-if='baseImageURL + crewMember.profile_path == "https://image.tmdb.org/t/p/original/null"' src="https://inspireddentalcare.co.uk/wp-content/uploads/2016/05/Facebook-default-no-profile-pic.jpg" alt="" style='width: 200px; height: 300px;' class='ImageFilter'>
-    <img v-else :src="baseImageURL + crewMember.profile_path" alt="" style='width: 200px; height: 300px;' class='ImageFilter'>
+    <img v-if='baseImageURL + crewMember.profile_path == "https://image.tmdb.org/t/p/original/null"' src="https://inspireddentalcare.co.uk/wp-content/uploads/2016/05/Facebook-default-no-profile-pic.jpg" alt="" class='ImageFilter'>
+    <img v-else :src="baseImageURL + crewMember.profile_path" alt="" class='ImageFilter'>
     </div>
 
   </div>
@@ -112,10 +112,10 @@ import { onMounted, ref } from 'vue'
 
 
 export default {
-  name: 'About',
+  name: 'MovieDetails',
   setup() {
     const route = useRoute()
-    const getId = route.fullPath.slice(7)
+    const getId = route.fullPath.slice(15)
     const getMovie = ref({})
     const baseImageURL = ref('https://image.tmdb.org/t/p/original/')
     const getCredits = ref({})
@@ -213,6 +213,15 @@ h1 {
   color: #fff;
 }
 
+.movieDetails {
+  margin-left: 300px;
+  width: 800px;
+
+  li {
+    padding: 0px 15px;
+  }
+}
+
 .about {
   margin-left: 16.66%;
   width: 66%;
@@ -220,16 +229,26 @@ h1 {
 }
 
 .castCrewMembers {
+  max-width: 1264px;
   display: flex;
+  white-space: nowrap;
+  flex-shrink: 0;
+  overflow-x: scroll;
   justify-content:  space-between;
-  width: 1600px;
-  color: #fff;
+}
+
+.ImageFilter {
+  filter: contrast(70%) brightness(60%);
+  display: inline-block;
+  width: 200px;
+  height: 300px;
 }
 
 .castMember {
   position: relative;
   width: 200px;
   color: white;
+  margin-right: 30px;
 }
 
 .castCrewLabels {
@@ -256,10 +275,7 @@ h1 {
   position: relative;
   text-align: center;
   color: white;
-}
-
-.ImageFilter {
-  filter: contrast(70%) brightness(60%);
+  margin-right: 30px;
 }
 
 .partialReccomended {
@@ -277,7 +293,7 @@ h1 {
 }
 
 .listSpacing {
-  padding: 0px 10px;
+  padding: 0px 0px;
   border-right: 0.1px solid #a3a2a2;
 }
 
@@ -288,25 +304,6 @@ h1 {
   float: left;
   margin-top: 25%;
   margin-bottom: 5%;
-}
-
-.hamburger {
-  color: #fff;
-  position: absolute;
-  left: 89%;
-  top: -10%;
-  opacity: 0.8;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  
-  ul {
-    list-style-type: none;
-  }
-
-  li {
-    padding: 10px;
-  }
 }
 
 .hamburger:hover {
