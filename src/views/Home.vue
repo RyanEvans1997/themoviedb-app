@@ -1,12 +1,13 @@
 <template>
-  <div class="home">
-
   <div class='firstMoviePosterBG' :style="
   {
     backgroundImage: 'url(' + firstMovieImg + ')'
   }
   ">   
   </div>
+
+  <div class="home">
+
   <div v-if='hamburgerOpen' class='hamburger'>
     <i @click='toggleHamburger' class="fas fa-bars fa-2x" style='position: absolute; bottom: 55%;'></i>
   </div>
@@ -41,7 +42,11 @@
   <div class='ratingAndBtn'>
     <star-rating :rating="firstMovieRating / 2" :star-size="15" :read-only='true' :border-width='1' :increment='0.5' :show-rating='false'></star-rating>
 
-  <button class='goToMovieBtn'>Go To Movie</button>
+  <button class='goToMovieBtn'>
+          <router-link :to="{name: 'About', params: {id: firstMovie.id, fullMovie: firstMovie}}" style='color: #f3b814; text-decoration: none'>
+              Go To Movie
+            </router-link>
+          </button>
   </div>
 
   <div class='justRating'>
@@ -60,10 +65,10 @@
     <ul class='categoriesList' v-for='category in categories' :key='category'>
       <li v-for='genre in category' :key='genre' style='cursor: pointer'>
             <div class='currentGenre' >
-              <router-link v-if='genre.name === currentGenre' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
+              <router-link v-if='genre.name === currentGenre' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace style='color: blue'>
                 {{genre.name + ' >l'}}
               </router-link>
-              <router-link v-else-if='genre.name.toLowerCase() === route.fullPath.slice(1) || ("top-rated" === route.fullPath.slice(1) && genre.name.toLowerCase() === "top rated")' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
+              <router-link v-else-if='genre.name.toLowerCase() === route.fullPath.slice(1) || ("top-rated" === route.fullPath.slice(1) && genre.name.toLowerCase() === "top rated")' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace style='color: blue'>
                 {{genre.name + ' >'}}
               </router-link>
               <router-link v-else :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
@@ -77,16 +82,19 @@
   <div class='moviesSection'>
     <div class='formatMovies' v-for='(movie, index) in sortByMovies.results' :key='movie' @mouseenter.self='toggleHover(index)' @mouseleave.self='toggleHover(index)' >
       <div class='formatMoviesHover' v-if='hover && currentlyShowing === index'>
-        <p style='color:white;'>{{movie.release_date.slice(0,4)}} </p>
-        <p style='color:white;'>{{movie.original_title}} </p>
+        <div class='pContainer2'>
+          <p>{{movie.release_date.slice(0,4)}} </p>
+        <p>{{movie.original_title}} </p>
         <button class='goToMovieBtn'>
-          <router-link :to="{name: 'About', params: {id: movie.id, fullMovie: movie}}" style='color: #f3b814'>
+        <router-link :to="{name: 'About', params: {id: movie.id, fullMovie: movie}}" style='color: #f3b814; text-decoration: none'>
               Go To Movie
-            </router-link>
+          </router-link>
           </button>
+        </div>
       </div>
+
       <div>
-      <img :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path" alt="" style='width:100%' :class="{ 'imgHover': hover && currentlyShowing === index}">
+      <img :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path" alt="" :class="{ 'imgHover': hover && currentlyShowing === index}" style='width: 280px;'>
       </div>
     </div>
   </div>
@@ -239,6 +247,16 @@ body {
   color: #fff; 
 }
 
+a {
+  text-decoration: none;
+  color: #1c212e;
+  font-weight: 400;
+}
+
+li {
+  margin: 2px 25px;
+}
+
 .categoriesHeader {
   font-size: 48px;
   font-weight: normal;
@@ -263,15 +281,13 @@ div.categories {
   display: flex;
   justify-content: space-between;
   font-weight: 300;
-  width: 66%;
-  margin-left: 16.65%;
+  margin: 0 auto;
   padding: 20px 20% 20px 0px;
 }
 
 .firstMoviePoster {
   height: 450px;
   display: flex;
-  padding: 20% 0;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -296,23 +312,40 @@ div.categories {
 }
 
 .formatMovies {
+  margin-top: 40px;
   position: relative;
-  width: 25%;
-  float: left;
-  padding: 15px;
+}
+
+.moviesSection {
+  width: 1200px;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
 }
 
 .formatMoviesHover {
-  position: absolute;
-  width: 200px;
-  left: 18%;
-  top: 150px;
   display: flex;
-  flex-direction: column;
+  position: absolute;
   align-items: center;
-  height: 100px;
+  flex-direction: column;
   justify-content: space-between;
+  bottom: 100px;
+  left: 45px;
+  width: 200px;
   z-index: 1000;
+}
+
+.pContainer2 {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-around;
+    bottom: 50px;
+    left: 10px;
+    width: 180px;
+    height: 150px;
+    z-index: 1; 
 }
 
 .goToMovieBtn {
@@ -321,6 +354,7 @@ div.categories {
   padding: 5px;
   border-radius: 4px;
   color: #f3b814;
+  text-decoration: none;
 }
 
 .hamburger {
@@ -340,6 +374,12 @@ div.categories {
   li {
     padding: 10px;
   }
+}
+
+.home {
+  margin-left: 16.66%;
+  width: 66%;
+  max-width: 1264px;
 }
 
 .hamburger:hover {
@@ -390,8 +430,4 @@ div.categories {
   margin-top: 50px;
 }
 
-.moviesSection {
-  width: 66%;
-  margin-left: 16.65%;
-}
 </style>

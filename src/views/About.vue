@@ -11,7 +11,7 @@
   </div>
 <div v-else class='hamburger' style='background-color: #274D74;'>
       <i @click='toggleHamburger' class="fas fa-times fa-2x" style='position: absolute; bottom: 55%;'></i>
-      <ul style='text-align: right; position: absolute; bottom: 18%; left: 30%'>
+      <ul style='text-align: right; position: absolute; bottom: 18%; left: 30%; color: #fff;'>
         <li>
           <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'popular'.replace(' ', '-')}}">
             Popular
@@ -65,8 +65,8 @@
   </div>
 
   <div class='castCrewLabels'>
-    <h3>Cast</h3>
-    <h3>Crew</h3>
+    <h1>Cast</h1>
+    <h1>Crew</h1>
   </div>
 
   <div class='castCrewMembers'>
@@ -119,7 +119,7 @@ export default {
     const getMovie = ref({})
     const baseImageURL = ref('https://image.tmdb.org/t/p/original/')
     const getCredits = ref({})
-    let hamburgerOpen = ref(true)
+    const hamburgerOpen = ref(true)
     const getReccommended = ref({})
     const getMovieDetailsURL = ref(`https://api.themoviedb.org/3/movie/${getId}?api_key=${env.apikey}&language=en-US`)
     const getCreditsURL = ref(`https://api.themoviedb.org/3/movie/${getId}/credits?api_key=${env.apikey}&language=en-US`)
@@ -183,7 +183,6 @@ export default {
 
 <style lang='scss'>
 * {
-  color: #fff;
   box-sizing: border-box;
 }
 
@@ -196,14 +195,22 @@ p {
   padding: auto;
   text-align: left;
   font-size: 15px;
+  color: #fff;
+}
+
+h1 {
+  color: #fff;
+  font-weight: 300;
 }
 
 .navBarLinks {
   text-decoration: none;
+  color: #fff;
 }
 
 .movieDetails li {
   display: inline;
+  color: #fff;
 }
 
 .about {
@@ -215,6 +222,7 @@ p {
   display: flex;
   justify-content:  space-between;
   width: 1600px;
+  color: #fff;
 }
 
 .castMember {
@@ -225,7 +233,7 @@ p {
 
 .castCrewLabels {
   margin-bottom: 20px;
-  width: 742px; 
+  width: 770px; 
   display: flex; 
   justify-content: space-between;
 }
