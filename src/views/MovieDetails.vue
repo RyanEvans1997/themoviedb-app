@@ -185,6 +185,41 @@ export default {
 </script>
 
 <style lang='scss'>
+
+@media (min-width: 0px) and (max-width: 800px) {
+#movieOverview {
+  margin-top: 30px;
+  font-size: 12px;
+}
+
+.movieDetails {
+  font-size: 12px;
+  margin-left: -4%;
+  width: 800px;
+  
+  li {
+    display: inline;
+    color: #fff;
+  }
+}
+}
+
+@media (min-width: 801px) {
+#movieOverview {
+  margin-left: 330px; 
+  margin-top: 30px;
+}
+.movieDetails {
+  margin-left: 300px;
+  width: 800px;
+  
+  li {
+    display: inline;
+    color: #fff;
+  }
+}
+}
+
 * {
   box-sizing: border-box;
 }
@@ -223,11 +258,6 @@ p {
   float: left; 
   color: orange; 
   margin-right: 10px
-}
-
-#movieOverview {
-  margin-left: 330px; 
-  margin-top: 30px;
 }
 
 #genreName {
@@ -275,16 +305,6 @@ h1 {
 .navBarLinks {
   text-decoration: none;
   color: #fff;
-}
-
-.movieDetails {
-  margin-left: 300px;
-  width: 800px;
-  
-  li {
-    display: inline;
-    color: #fff;
-  }
 }
 
 .about {

@@ -273,13 +273,27 @@ $yellow: #f3b814;
 $maxBreakpoint: 1500px;
 $minBreakpoint: 1501px;
 
-
-@media (max-width: $maxBreakpoint) {
+@media (min-width: 0px) and (max-width: 800px) {
   .moviesSection {
   width: 100%;
   flex-wrap: wrap;
   display: flex;
   justify-content: space-between;
+}
+
+#firstMovieRating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0px;
+
+  button {
+    margin-left: 200px;
+  }
+
+  p {
+    margin-right: 250px; 
+    padding-bottom: 20px
+  }
 }
 
 .formatMovies {
@@ -304,7 +318,7 @@ $minBreakpoint: 1501px;
 }
 
 .categoriesHeader {
-  font-size: 40px;
+  font-size: 3vw;
   font-weight: normal;
   width: 300px;
 }
@@ -313,8 +327,115 @@ $minBreakpoint: 1501px;
   color: $activeColor;
 
   a {
-    font-size: 12px;
+    font-size: 5px;
+  }
+}
+
+.hamburger {
+  color: #fff;
+  max-width: 1000px;
+  position: absolute;
+  right: -55%;
+  top: -80px;
+  opacity: 0.8;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  
+  ul {
+    list-style-type: none;
+    text-align: right; 
+    position: absolute; 
+    bottom: 18%; 
+    left: 30%
+  }
+  li {
+    padding: 8px;
+    margin: 2px 0px;
+  }
+}
+}
+
+
+@media (min-width: 801px) and (max-width: $maxBreakpoint) {
+  .moviesSection {
+  width: 100%;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+}
+
+#firstMovieRating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0px;
+
+  button {
+    margin-left: 200px;
+  }
+
+  p {
+    margin-right: 285px; 
+    padding-bottom: 20px
+  }
+}
+
+.formatMovies {
+  margin-top: 40px;
+  position: relative;
+      #posterImage {
+      display: inline-block;
+      width: 280px;
+    }
+}
+
+  .formatMoviesHover {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    bottom: 30%;
+    left: 15%;
+    width: 200px;
+    z-index: 1000;
+}
+
+.categoriesHeader {
+  font-size: 4vw;
+  font-weight: normal;
+  width: 300px;
+}
+
+.currentGenre {
+  color: $activeColor;
+
+  a {
+    font-size: 1vw;
     margin-left: 20px;
+  }
+}
+.hamburger {
+  color: #fff;
+  max-width: 1000px;
+  position: absolute;
+  right: -25%;
+  top: -80px;
+  opacity: 0.8;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  
+  ul {
+    list-style-type: none;
+    text-align: right; 
+    position: absolute; 
+    bottom: 18%; 
+    left: 30%
+  }
+  li {
+    padding: 8px;
+    margin: 2px 0px;
   }
 }
 }
@@ -329,6 +450,21 @@ $minBreakpoint: 1501px;
 
 .currentGenre {
   color: $activeColor;
+}
+
+#firstMovieRating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0px;
+
+  button {
+    margin-left: 200px;
+  }
+
+  p {
+    margin-right: 285px; 
+    padding-bottom: 20px
+  }
 }
 
 .categoriesHeader {
@@ -356,6 +492,30 @@ $minBreakpoint: 1501px;
   left: 45px;
   width: 200px;
   z-index: 1000;
+}
+
+.hamburger {
+  color: #fff;
+  max-width: 1000px;
+  position: absolute;
+  right: -25%;
+  top: -80px;
+  opacity: 0.8;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  
+  ul {
+    list-style-type: none;
+    text-align: right; 
+    position: absolute; 
+    bottom: 18%; 
+    left: 30%
+  }
+  li {
+    padding: 8px;
+    margin: 2px 0px;
+  }
 }
 }
 
@@ -459,31 +619,6 @@ div.categories {
   }
 }
 
-.hamburger {
-  color: #fff;
-  max-width: 1000px;
-  position: absolute;
-  right: -25%;
-  top: -80px;
-  opacity: 0.8;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  
-  ul {
-    list-style-type: none;
-    text-align: right; 
-    position: absolute; 
-    bottom: 18%; 
-    left: 30%
-  }
-  li {
-    padding: 8px;
-    margin: 2px 0px;
-  }
-}
-
-
 .container {
   margin-left: 16.66%;
   width: 66%;
@@ -513,21 +648,6 @@ div.categories {
 
   button {
     margin-left: 200px;
-  }
-}
-
-#firstMovieRating {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0px;
-
-  button {
-    margin-left: 200px;
-  }
-
-  p {
-    margin-right: 285px; 
-    padding-bottom: 20px
   }
 }
 
