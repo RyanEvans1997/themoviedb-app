@@ -2,10 +2,17 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import MovieDetails from '../views/MovieDetails.vue'
 import Error404 from '../views/Error404.vue'
+let dynamicRoute;
 
 console.log(window.location.href)
 
 const allRoutes = ['http://localhost:8080/', 'http://localhost:8080/popular', 'http://localhost:8080/top-rated', 'http://localhost:8080/upcoming', 'https://themoviedbapi.netlify.app/', 'https://themoviedbapi.netlify.app/popular', 'https://themoviedbapi.netlify.app/top-rated', 'https://themoviedbapi.netlify.app/upcoming']
+
+if(allRoutes.includes(window.location.href)) {
+  dynamicRoute = Home;
+} else {
+  dynamicRoute = Error404;
+}
 
 const routes = [
   {
@@ -17,14 +24,7 @@ const routes = [
   {
     path: '/:sortBy',
     name: 'Home',
-    get component() {
-      if(allRoutes.includes(window.location.href)) 
-      {
-        return Home
-      } else {
-        return Error404
-      }
-    }
+    component: dynamicRoute
   },
   {
     path: '/movie-details/:id',

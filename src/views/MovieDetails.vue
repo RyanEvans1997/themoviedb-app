@@ -7,11 +7,11 @@
 </div>
 <div class='container'>
   <div v-if='hamburgerOpen' class='hamburger'>
-    <i @click='toggleHamburger' class="fas fa-bars fa-2x" style='position: absolute; bottom: 55%;'></i>
+    <i @click='toggleHamburger' class="fas fa-bars fa-2x toggleHamburgerSpacing"></i>
   </div>
 <div v-else class='hamburger' style='background-color: #274D74;'>
-      <i @click='toggleHamburger' class="fas fa-times fa-2x" style='position: absolute; bottom: 55%;'></i>
-      <ul style='text-align: right; position: absolute; bottom: 18%; left: 22%; color: #fff;'>
+      <i @click='toggleHamburger' class="fas fa-times fa-2x toggleHamburgerSpacing"></i>
+      <ul style='text-align: right; position: absolute; bottom: 18%; left: 30%'>
         <li>
           <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'popular'.replace(' ', '-')}}">
             Popular
@@ -31,11 +31,11 @@
   </div>
 
   <div class='movieInfo'>
-    <img :src="baseImageURL + getMovie.poster_path" alt="" style='height: 500px; width: 300px; float: left; margin-right: 20px'>
-    <p style='font-weight: bold; font-size: 38px;'>{{getMovie.original_title}}</p>
-    <i style='float: left; color: orange; margin-right: 10px' class="fas fa-star fa-3x"></i>
-    <p style='color: #f3b814; font-size: 28px'>{{getMovie.vote_average}}</p>
-    <p style='color: #8a6a11'>{{getMovie.vote_count}} votes</p>
+    <img :src="baseImageURL + getMovie.poster_path" alt="">
+    <p id='originalTitle'>{{getMovie.original_title}}</p>
+    <i id='voteStar' class="fas fa-star fa-3x"></i>
+    <p id='voteAverage'>{{getMovie.vote_average}}</p>
+    <p id='voteCount'>{{getMovie.vote_count}} votes</p>
     <br>
     <ul class='movieDetails'>
       <li class='listSpacing' >
@@ -47,12 +47,12 @@
       <li class='listSpacing'>
         {{getMovie.original_language}}
       </li>
-      <div style='display: inline; margin-left: 15px'>
-        <div style='display: inline;' v-for='(genre, index) in getMovie.genres' :key='genre'>
-        <li v-if='index != Object.keys(getMovie.genres).length - 1' style='padding: 0 0 0 0'>
+      <div id='genresContainer'>
+        <div id='genreContainer' v-for='(genre, index) in getMovie.genres' :key='genre'>
+        <li v-if='index != Object.keys(getMovie.genres).length - 1' class='genreName'>
           {{genre.name}},
         </li>
-        <li v-else style='padding: 0'>
+        <li v-else class='genreName'>
            {{genre.name}}
         </li>
       </div>
@@ -60,7 +60,7 @@
 
       </ul>
 
-    <p style='margin-left: 330px; margin-top: 30px; '>{{getMovie.overview}}</p>
+    <p id='movieOverview'>{{getMovie.overview}}</p>
   </div>
 
   <div class='castCrewLabels'>
@@ -74,10 +74,10 @@
 
     <div class='pContainer'>
     <p>{{castMember.original_name}}</p>
-    <p style='font-weight: 300'>{{castMember.character}}</p>
+    <p id='characterName'>{{castMember.character}}</p>
     </div>
 
-    <img v-if='baseImageURL + castMember.profile_path == "https://image.tmdb.org/t/p/original/null"' src="https://inspireddentalcare.co.uk/wp-content/uploads/2016/05/Facebook-default-no-profile-pic.jpg" alt="" style='width: 200px; height: 300px;' class='ImageFilter'>
+    <img v-if='baseImageURL + castMember.profile_path == "https://image.tmdb.org/t/p/original/null"' src="https://inspireddentalcare.co.uk/wp-content/uploads/2016/05/Facebook-default-no-profile-pic.jpg" alt="" class='ImageFilter'>
     <img v-else :src="baseImageURL + castMember.profile_path" alt="" class='ImageFilter'>
     </div>
 
@@ -93,7 +93,7 @@
   </div>
 
   <div class='castCrewLabels'>
-    <h1 style='margin-top: 50px;'>Reccommended Movies</h1>
+    <h1 id='reccommendedMovies'>Reccommended Movies</h1>
   </div>
 
     <div class='castCrewMembers2' >
@@ -105,16 +105,16 @@
         <p>{{movie.release_date.slice(0,4)}} </p>
         <p>{{movie.original_title}} </p>
         <button class='goToMovieBtn'>
-        <router-link :to="{name: 'MovieDetails', params: {id: movie.id, fullMovie: movie}}" style='color: #f3b814; text-decoration: none'>
+        <router-link :to="{name: 'MovieDetails', params: {id: movie.id, fullMovie: movie}}">
               Go To Movie
           </router-link>
           </button>
     </div>
 
-      </div>
+    </div>
 
 
-    <img :src="baseImageURL + movie.poster_path" alt="" style='display: inline-block; width: 200px; height: 300px;' :class="{ 'imgHover': hover && currentlyShowing === index}">
+    <img :src="baseImageURL + movie.poster_path" alt="" class='ImgHoverableSpacing' :class="{ 'imgHovered': hover && currentlyShowing === index}">
     </div>
 
   </div>
@@ -226,6 +226,57 @@ p {
   color: #fff;
 }
 
+#voteAverage {
+  color: #f3b814; 
+  font-size: 28px
+}
+
+#originalTitle {
+  font-weight: bold; 
+  font-size: 38px;
+}
+
+#characterName {
+  font-weight: 300;
+}
+
+#voteCount {
+  color: #8a6a11;
+}
+
+#voteStar {
+  float: left; 
+  color: orange; 
+  margin-right: 10px
+}
+
+#movieOverview {
+  margin-left: 330px; 
+  margin-top: 30px;
+}
+
+#genreName {
+  padding: 0 0 0 0;
+}
+
+#genresContainer {
+  display: inline; 
+  margin-left: 15px
+}
+
+#genreContainer {
+  display: inherit;
+}
+
+#reccommendedMovies {
+  margin-top: 50px;
+}
+
+.toggleHamburgerSpacing {
+  position: absolute; 
+  bottom: 55%;
+}
+
 h1 {
   color: #fff;
   font-weight: 300;
@@ -240,9 +291,7 @@ h1 {
   margin-left: 300px;
   width: 800px;
   
-
   li {
-    padding: 0px 10px;
     display: inline;
     color: #fff;
   }
@@ -328,8 +377,10 @@ h1 {
 }
 
 .listSpacing {
-  padding: 0px 0px;
-  border-right: 0.1px solid #a3a2a2;
+    padding: 0px 10px;
+    display: inline;
+    color: #fff;
+    border-right: 0.1px solid #a3a2a2;
 }
 
 .movieInfo {
@@ -339,9 +390,13 @@ h1 {
   float: left;
   margin-top: 25%;
   margin-bottom: 5%;
+  
+  img {
+    height: 500px; 
+    width: 300px; 
+    float: left; 
+    margin-right: 20px
+  }
 }
 
-.hamburger:hover {
-  cursor: pointer;
-}
 </style>

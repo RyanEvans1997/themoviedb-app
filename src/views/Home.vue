@@ -11,13 +11,13 @@
   <div class="container">
 
   <div v-if='hamburgerOpen' class='hamburger'>
-    <i @click='toggleHamburger' class="fas fa-bars fa-2x" style='position: absolute; bottom: 55%;'></i>
+    <i @click='toggleHamburger' class="fas fa-bars fa-2x toggleHamburgerSpacing"></i>
   </div>
 <div v-else class='hamburger' style='background-color: #274D74;'>
-      <i @click='toggleHamburger' class="fas fa-times fa-2x" style='position: absolute; bottom: 55%;'></i>
+      <i @click='toggleHamburger' class="fas fa-times fa-2x toggleHamburgerSpacing"></i>
       <ul style='text-align: right; position: absolute; bottom: 18%; left: 30%'>
         <li>
-          <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: ''.replace(' ', '-')}}">
+          <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'popular'.replace(' ', '-')}}">
             Popular
           </router-link>
         </li>
@@ -96,7 +96,7 @@
       </div>
 
       <div>
-      <img :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path" alt="" :class="{ 'imgHover': hover && currentlyShowing === index}" style='width: 280px;'>
+      <img :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path" alt="" :class="{ 'imgHovered': hover && currentlyShowing === index}" style='width: 280px;'>
       </div>
     </div>
   </div>
@@ -150,6 +150,7 @@ export default {
 
     function toggleHamburger() {
       hamburgerOpen.value = !hamburgerOpen.value
+      
     }
 
     function getCategoryListItem() {
@@ -351,6 +352,11 @@ div.categories {
   border-radius: 4px;
   color: #f3b814;
   text-decoration: none;
+
+  a {
+    color: #f3b814; 
+    text-decoration: none;
+  }
 }
 
 .hamburger {
@@ -367,12 +373,12 @@ div.categories {
   ul {
     list-style-type: none;
   }
-
   li {
     padding: 8px;
     margin: 2px 0px;
   }
 }
+
 
 .container {
   margin-left: 16.66%;
@@ -385,8 +391,14 @@ div.categories {
   cursor: pointer;
 }
 
-.imgHover {
+.imgHovered {
   filter: contrast(30%) brightness(60%) grayscale(100%);
+}
+
+.ImgHoverableSpacing {
+  display: inline-block; 
+  width: 200px; 
+  height: 300px;
 }
 
 .ratingAndBtn {
@@ -420,6 +432,7 @@ div.categories {
   width: 200px;
   height: 200px;
 }
+
 .movieYear {
   margin-top: 50px;
 }
