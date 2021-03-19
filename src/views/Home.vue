@@ -67,10 +67,10 @@
     <ul class='categoriesList' v-for='category in categories' :key='category'>
       <li v-for='genre in category' :key='genre' style='cursor: pointer'>
             <div class='currentGenre' >
-              <router-link v-if='genre.name === currentGenre' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace style='color: blue'>
-                {{genre.name + ' >l'}}
+              <router-link v-if='genre.name === currentGenre' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace style='color: #5F84EF'>
+                {{genre.name + ' >'}}
               </router-link>
-              <router-link v-else-if='genre.name.toLowerCase() === route.fullPath.slice(1) || ("top-rated" === route.fullPath.slice(1) && genre.name.toLowerCase() === "top rated")' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace style='color: blue'>
+              <router-link v-else-if='genre.name.toLowerCase() === route.fullPath.slice(1) || ("top-rated" === route.fullPath.slice(1) && genre.name.toLowerCase() === "top rated")' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace style='color: #5F84EF'>
                 {{genre.name + ' >'}}
               </router-link>
               <router-link v-else :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
@@ -85,7 +85,7 @@
     <div class='formatMovies' v-for='(movie, index) in sortByMovies.results' :key='movie' @mouseenter.self='toggleHover(index)' @mouseleave.self='toggleHover(index)' >
       <div class='formatMoviesHover' v-if='hover && currentlyShowing === index'>
         <div class='pContainer2'>
-          <p>{{movie.release_date.slice(0,4)}} </p>
+        <p>{{movie.release_date.slice(0,4)}} </p>
         <p>{{movie.original_title}} </p>
         <button class='goToMovieBtn'>
         <router-link :to="{name: 'MovieDetails', params: {id: movie.id, fullMovie: movie}}" style='color: #f3b814; text-decoration: none'>
@@ -265,12 +265,13 @@ a {
   list-style: none;
   columns: 3;
   li {
-    padding-right: 0px;
+    padding: 3px 35px;
+    text-align: left;
   }
 }
 
 .currentGenre {
-  color: blue;
+  color: #5F84EF;
 }
 
 div.categories {
@@ -301,10 +302,8 @@ div.categories {
 
 .firstMoviePosterBG {
   position: fixed;
-  height: 400px;
-  width: 2000px;
-  background-position: center;
-  z-index: -1000;
+  height: 480px;
+  width: 3000px;
   opacity: 0.4;
 }
 
@@ -356,8 +355,9 @@ div.categories {
 
 .hamburger {
   color: #fff;
+  max-width: 1000px;
   position: absolute;
-  right: -60px;
+  right: -410px;
   top: -80px;
   opacity: 0.8;
   width: 300px;
@@ -378,6 +378,7 @@ div.categories {
   margin-left: 16.66%;
   width: 66%;
   max-width: 1264px;
+  position: relative;
 }
 
 .hamburger:hover {

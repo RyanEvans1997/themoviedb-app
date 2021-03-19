@@ -49,8 +49,8 @@
       </li>
       <div style='display: inline; margin-left: 15px'>
         <div style='display: inline;' v-for='(genre, index) in getMovie.genres' :key='genre'>
-        <li v-if='index > 0' style='padding: 0'>
-          , &nbsp; {{genre.name}} 
+        <li v-if='index != Object.keys(getMovie.genres).length - 1' style='padding: 0 0 0 0'>
+          {{genre.name}},
         </li>
         <li v-else style='padding: 0'>
            {{genre.name}}
@@ -59,9 +59,8 @@
       </div>
 
       </ul>
-    <br>
-        <br>
-    <p>{{getMovie.overview}}</p>
+
+    <p style='margin-left: 330px; margin-top: 30px; '>{{getMovie.overview}}</p>
   </div>
 
   <div class='castCrewLabels'>
@@ -93,15 +92,34 @@
 
   </div>
 
-  <br>
-
-  <div style='width: 100%; float: left;'>
-    <h1 style='margin-top: 5%; text-align: left; margin-left: 15px; font-weight: 300; margin-bottom: 10px'>Reccommended Movies</h1>
-    <div v-for='movie in getPartialReccomended' :key='movie' class='partialReccomended'>
-      <img :src="baseImageURL + movie.poster_path" alt="" style='width: 200px; height: 300px;'>
-    </div>
-    </div>
+  <div class='castCrewLabels'>
+    <h1 style='margin-top: 50px;'>Reccommended Movies</h1>
   </div>
+
+    <div class='castCrewMembers2' >
+
+    <div v-for='(movie, index) in getPartialReccomended' :key='movie' class='castMember' @mouseenter.self='toggleHover(index)' @mouseleave.self='toggleHover(index)' >
+
+      <div v-if='hover && currentlyShowing === index'> 
+        <div class='pContainer2'>
+        <p>{{movie.release_date.slice(0,4)}} </p>
+        <p>{{movie.original_title}} </p>
+        <button class='goToMovieBtn'>
+        <router-link :to="{name: 'MovieDetails', params: {id: movie.id, fullMovie: movie}}" style='color: #f3b814; text-decoration: none'>
+              Go To Movie
+          </router-link>
+          </button>
+    </div>
+
+      </div>
+
+
+    <img :src="baseImageURL + movie.poster_path" alt="" style='display: inline-block; width: 200px; height: 300px;' :class="{ 'imgHover': hover && currentlyShowing === index}">
+    </div>
+
+  </div>
+  </div>
+
 </template>
 
 <script>
@@ -129,10 +147,17 @@ export default {
     const getReccomendedRequest = axios.get(getReccommendedURL.value)
     const getMovieYear = ref('')
     const getMovieRunning = ref(0)
+    const hover = ref(false)
+    const currentlyShowing = ref(null)
     const getMovieCast = ref({})
     const getMovieCastCharacter = ref({})
     const getMovieCrew = ref({})
     const getPartialReccomended = ref({})
+
+    function toggleHover (index) {
+        hover.value = !hover.value
+        currentlyShowing.value = index
+    }
 
     onMounted(() => {
       axios.all([getMoviesDetailsRequest, getCreditsRequest, getReccomendedRequest])
@@ -169,6 +194,7 @@ export default {
       getReccommended,
       baseImageURL,
       toggleHamburger,
+      hover,
       hamburgerOpen,
       getMovieYear,
       getMovieRunning,
@@ -176,6 +202,8 @@ export default {
       getMovieCrew,
       getPartialReccomended,
       getMovieCastCharacter,
+      toggleHover,
+      currentlyShowing,
     }
   }
 }
@@ -208,17 +236,15 @@ h1 {
   color: #fff;
 }
 
-.movieDetails li {
-  display: inline;
-  color: #fff;
-}
-
 .movieDetails {
   margin-left: 300px;
   width: 800px;
+  
 
   li {
-    padding: 0px 15px;
+    padding: 0px 10px;
+    display: inline;
+    color: #fff;
   }
 }
 
@@ -229,6 +255,15 @@ h1 {
 }
 
 .castCrewMembers {
+  max-width: 1264px;
+  display: flex;
+  white-space: nowrap;
+  flex-shrink: 0;
+  overflow-x: scroll;
+  justify-content:  space-between;
+}
+
+.castCrewMembers2 {
   max-width: 1264px;
   display: flex;
   white-space: nowrap;
