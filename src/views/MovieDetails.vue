@@ -92,7 +92,7 @@
   </div>
 
 </template>
-/
+
 <script>
 import { useRoute } from 'vue-router'
 import axios from 'axios'
@@ -128,6 +128,7 @@ export default {
     const getMovieCastCharacter = ref({})
     const getMovieCrew = ref({})
     const getPartialReccomended = ref({})
+    // a
 
     function toggleHover (index) {
         hover.value = !hover.value
