@@ -5,6 +5,8 @@ import Error404 from '../views/Error404.vue'
 
 console.log(window.location.href)
 
+const allRoutes = ['http://localhost:8080/', 'http://localhost:8080/popular', 'http://localhost:8080/top-rated', 'http://localhost:8080/upcoming', 'https://themoviedbapi.netlify.app/', 'https://themoviedbapi.netlify.app/popular', 'https://themoviedbapi.netlify.app/top-rated', 'https://themoviedbapi.netlify.app/upcoming']
+
 const routes = [
   {
     path: '/',
@@ -16,7 +18,7 @@ const routes = [
     path: '/:sortBy',
     name: 'Home',
     get component() {
-      if(window.location.href == 'http://localhost:8080/' || window.location.href == 'http://localhost:8080/popular' || window.location.href == 'http://localhost:8080/top-rated' || window.location.href == 'http://localhost:8080/upcoming' || window.location.href == 'https://themoviedbapi.netlify.app/' || window.location.href == 'https://themoviedbapi.netlify.app/popular' || window.location.href == 'https://themoviedbapi.netlify.app/top-rated' || window.location.href == 'https://themoviedbapi.netlify.app/upcoming') 
+      if(allRoutes.includes(window.location.href)) 
       {
         return Home
       } else {
