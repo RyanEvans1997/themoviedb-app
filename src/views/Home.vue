@@ -97,7 +97,7 @@
       </div>
 
       <div>
-      <img :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path" alt="" :class="{ 'imgHovered': hover && currentlyShowing === index}" style='width: 280px;'>
+      <img :src="'https://image.tmdb.org/t/p/w500/' + movie.poster_path" alt="" :class="{ 'imgHovered': hover && currentlyShowing === index}" id='posterImage'>
       </div>
     </div>
   </div>
@@ -270,6 +270,81 @@ export default {
 $backgroundColor: #1c212e;
 $activeColor: #5F84EF;
 $yellow: #f3b814;
+$maxBreakpoint: 1500px;
+$minBreakpoint: 1501px;
+
+
+@media (max-width: $maxBreakpoint) {
+  .moviesSection {
+  width: 100%;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+}
+
+.formatMovies {
+  margin-top: 40px;
+  position: relative;
+      #posterImage {
+      display: inline-block;
+      width: 280px;
+    }
+}
+
+  .formatMoviesHover {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    bottom: 30%;
+    left: 15%;
+    width: 200px;
+    z-index: 1000;
+}
+
+.categoriesHeader {
+  font-size: 40px;
+  font-weight: normal;
+  width: 300px;
+}
+}
+
+@media (min-width: $minBreakpoint) {
+  .moviesSection {
+  width: 100%;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+}
+
+.categoriesHeader {
+  font-size: 48px;
+  font-weight: normal;
+  width: 300px;
+}
+
+.formatMovies {
+  margin-top: 40px;
+  position: relative;
+      #posterImage {
+      display: inline-block;
+      width: 280px;
+    }
+}
+
+.formatMoviesHover {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  bottom: 100px;
+  left: 45px;
+  width: 200px;
+  z-index: 1000;
+}
+}
 
 * {
   margin: 0;
@@ -292,12 +367,6 @@ a {
   text-decoration: none;
   color: $backgroundColor;
   font-weight: 400;
-}
-
-.categoriesHeader {
-  font-size: 48px;
-  font-weight: normal;
-  width: 300px;
 }
 
 .categoriesList {
@@ -325,10 +394,10 @@ div.categories {
   background-color: #fff;
   color: $backgroundColor;
   display: flex;
-  max-width: 1215px;
+  max-width: 100%;
   justify-content: space-between;
   font-weight: 300;
-  padding: 20px 20% 20px 0px;
+  padding: 1% 20% 1% 0px;
 }
 
 .firstMoviePoster {
@@ -352,30 +421,6 @@ div.categories {
   height: 480px;
   width: 3000px;
   opacity: 0.4;
-}
-
-.formatMovies {
-  margin-top: 40px;
-  position: relative;
-}
-
-.moviesSection {
-  width: 1215px;
-  flex-wrap: wrap;
-  display: flex;
-  justify-content: space-between;
-}
-
-.formatMoviesHover {
-  display: flex;
-  position: absolute;
-  align-items: center;
-  flex-direction: column;
-  justify-content: space-between;
-  bottom: 100px;
-  left: 45px;
-  width: 200px;
-  z-index: 1000;
 }
 
 .pContainer2 {
