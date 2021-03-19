@@ -17,7 +17,7 @@
       <i @click='toggleHamburger' class="fas fa-times fa-2x" style='position: absolute; bottom: 55%;'></i>
       <ul style='text-align: right; position: absolute; bottom: 18%; left: 30%'>
         <li>
-          <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'popular'.replace(' ', '-')}}">
+          <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: ''.replace(' ', '-')}}">
             Popular
           </router-link>
         </li>

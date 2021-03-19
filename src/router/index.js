@@ -1,19 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import MovieDetails from '../views/MovieDetails.vue'
+import Error404 from '../views/Error404.vue'
+
+console.log(window.location.href)
 
 const routes = [
   {
     path: '/',
     name: 'HomeRedirect',
     component: Home,
-    redirect: '/popular'
-
+    redirect: '/popular',
   },
   {
     path: '/:sortBy',
     name: 'Home',
-    component: Home
+    get component() {
+      if(window.location.href == 'http://localhost:8080/' || window.location.href == 'http://localhost:8080/popular' || window.location.href == 'http://localhost:8080/top-rated' || window.location.href == 'http://localhost:8080/upcoming') 
+      {
+        return Home
+      } else {
+        return Error404
+      }
+    }
   },
   {
     path: '/movie-details/:id',
