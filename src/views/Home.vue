@@ -15,7 +15,7 @@
   </div>
 <div v-else class='hamburger' style='background-color: #274D74;'>
       <i @click='toggleHamburger' class="fas fa-times fa-2x toggleHamburgerSpacing"></i>
-      <ul style='text-align: right; position: absolute; bottom: 18%; left: 30%'>
+      <ul>
         <li>
           <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'popular'.replace(' ', '-')}}">
             Popular
@@ -35,7 +35,7 @@
   </div>
 
   <div class='firstMoviePoster'>
-  <p style='font-size: 36px'>{{firstMovie.title}}</p>
+  <p id='firstMovieTitle'>{{firstMovie.title}}</p>
 
   <div class='movieYear'>
     <p>{{firstMovieYear}}</p>
@@ -45,14 +45,14 @@
     <star-rating :rating="firstMovieRating / 2" :star-size="15" :read-only='true' :border-width='1' :increment='0.5' :show-rating='false'></star-rating>
 
   <button class='goToMovieBtn'>
-          <router-link :to="{name: 'MovieDetails', params: {id: firstMovie.id, fullMovie: firstMovie}}" style='color: #f3b814; text-decoration: none'>
+          <router-link :to="{name: 'MovieDetails', params: {id: firstMovie.id, fullMovie: firstMovie}}">
               Go To Movie
             </router-link>
           </button>
   </div>
 
-  <div class='justRating'>
-  <p style='margin-right: 285px; padding-bottom: 20px'>
+  <div id='firstMovieRating'>
+  <p>
     Ratings
   </p>
 
@@ -65,12 +65,12 @@
     <h2 class='categoriesHeader'>Categories &amp; Filters</h2>
 
     <ul class='categoriesList' v-for='category in categories' :key='category'>
-      <li v-for='genre in category' :key='genre' style='cursor: pointer'>
+      <li v-for='genre in category' :key='genre'>
             <div class='currentGenre' >
-              <router-link v-if='genre.name === currentGenre' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace style='color: #5F84EF'>
+              <router-link v-if='genre.name === currentGenre' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace class='activeGenre'>
                 {{genre.name + ' >'}}
               </router-link>
-              <router-link v-else-if='genre.name.toLowerCase() === route.fullPath.slice(1) || ("top-rated" === route.fullPath.slice(1) && genre.name.toLowerCase() === "top rated")' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace style='color: #5F84EF'>
+              <router-link v-else-if='genre.name.toLowerCase() === route.fullPath.slice(1) || ("top-rated" === route.fullPath.slice(1) && genre.name.toLowerCase() === "top rated")' :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace class='activeGenre'>
                 {{genre.name + ' >'}}
               </router-link>
               <router-link v-else :to="{name: 'Home', params: {sortBy: genre.name.replace(' ', '-').toLowerCase()}}" replace>
@@ -88,7 +88,7 @@
         <p>{{movie.release_date.slice(0,4)}} </p>
         <p>{{movie.original_title}} </p>
         <button class='goToMovieBtn'>
-        <router-link :to="{name: 'MovieDetails', params: {id: movie.id, fullMovie: movie}}" style='color: #f3b814; text-decoration: none'>
+        <router-link :to="{name: 'MovieDetails', params: {id: movie.id, fullMovie: movie}}">
               Go To Movie
           </router-link>
           </button>
@@ -250,6 +250,11 @@ body {
   color: #fff; 
 }
 
+#firstMovieTitle {
+  font-size: 36px;
+}
+
+
 a {
   text-decoration: none;
   color: #1c212e;
@@ -266,8 +271,16 @@ a {
   list-style: none;
   columns: 3;
   li {
-    padding: 3px 35px;
+    margin: 3px 35px 3px 0px;
     text-align: left;
+  }
+
+  a {
+    cursor: pointer;
+  }
+
+  .activeGenre {
+    color: #5F84EF;
   }
 }
 
@@ -314,7 +327,7 @@ div.categories {
 }
 
 .moviesSection {
-  width: 1200px;
+  width: 1215px;
   flex-wrap: wrap;
   display: flex;
   justify-content: space-between;
@@ -372,6 +385,10 @@ div.categories {
   
   ul {
     list-style-type: none;
+    text-align: right; 
+    position: absolute; 
+    bottom: 18%; 
+    left: 30%
   }
   li {
     padding: 8px;
@@ -412,13 +429,18 @@ div.categories {
   }
 }
 
-.justRating {
+#firstMovieRating {
   display: flex;
   align-items: center;
   margin-bottom: 0px;
 
   button {
     margin-left: 200px;
+  }
+
+  p {
+    margin-right: 285px; 
+    padding-bottom: 20px
   }
 }
 

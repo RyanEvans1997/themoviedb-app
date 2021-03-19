@@ -11,7 +11,7 @@
   </div>
 <div v-else class='hamburger' style='background-color: #274D74;'>
       <i @click='toggleHamburger' class="fas fa-times fa-2x toggleHamburgerSpacing"></i>
-      <ul style='text-align: right; position: absolute; bottom: 18%; left: 30%'>
+      <ul>
         <li>
           <router-link class='navBarLinks' :to="{name: 'Home', params: {sortBy: 'popular'.replace(' ', '-')}}">
             Popular
