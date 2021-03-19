@@ -96,7 +96,6 @@
 <script>
 import { useRoute } from 'vue-router'
 import axios from 'axios'
-import env from '@/env.js'
 import { onMounted, ref } from 'vue'
 import MovieInfo from '../components/MovieInfo.vue'
 
@@ -115,9 +114,9 @@ export default {
     const getCredits = ref({})
     const hamburgerOpen = ref(true)
     const getReccommended = ref({})
-    const getMovieDetailsURL = ref(`https://api.themoviedb.org/3/movie/${getId}?api_key=${env.apikey}&language=en-US`)
-    const getCreditsURL = ref(`https://api.themoviedb.org/3/movie/${getId}/credits?api_key=${env.apikey}&language=en-US`)
-    const getReccommendedURL = ref(`https://api.themoviedb.org/3/movie/${getId}/recommendations?api_key=${env.apikey}&language=en-US&page=1`)
+    const getMovieDetailsURL = ref(`https://api.themoviedb.org/3/movie/${getId}?api_key=${process.env.VUE_APP_APIKEY}&language=en-US`)
+    const getCreditsURL = ref(`https://api.themoviedb.org/3/movie/${getId}/credits?api_key=${process.env.VUE_APP_APIKEY}&language=en-US`)
+    const getReccommendedURL = ref(`https://api.themoviedb.org/3/movie/${getId}/recommendations?api_key=${process.env.VUE_APP_APIKEY}&language=en-US&page=1`)
     const getMoviesDetailsRequest = axios.get(getMovieDetailsURL.value)
     const getCreditsRequest = axios.get(getCreditsURL.value)
     const getReccomendedRequest = axios.get(getReccommendedURL.value)
