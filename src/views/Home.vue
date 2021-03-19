@@ -308,6 +308,15 @@ $minBreakpoint: 1501px;
   font-weight: normal;
   width: 300px;
 }
+
+.currentGenre {
+  color: $activeColor;
+
+  a {
+    font-size: 12px;
+    margin-left: 20px;
+  }
+}
 }
 
 @media (min-width: $minBreakpoint) {
@@ -316,6 +325,10 @@ $minBreakpoint: 1501px;
   flex-wrap: wrap;
   display: flex;
   justify-content: space-between;
+}
+
+.currentGenre {
+  color: $activeColor;
 }
 
 .categoriesHeader {
@@ -384,10 +397,6 @@ a {
   .activeGenre {
     color: $activeColor;
   }
-}
-
-.currentGenre {
-  color: $activeColor;
 }
 
 div.categories {
