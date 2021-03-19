@@ -325,9 +325,9 @@ div.categories {
   background-color: #fff;
   color: $backgroundColor;
   display: flex;
+  max-width: 1215px;
   justify-content: space-between;
   font-weight: 300;
-  margin: 0 auto;
   padding: 20px 20% 20px 0px;
 }
 
@@ -409,7 +409,7 @@ div.categories {
   color: #fff;
   max-width: 1000px;
   position: absolute;
-  right: -410px;
+  right: -25%;
   top: -80px;
   opacity: 0.8;
   width: 300px;
