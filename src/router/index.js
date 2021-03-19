@@ -16,7 +16,7 @@ const routes = [
     path: '/:sortBy',
     name: 'Home',
     get component() {
-      if(window.location.href == 'http://localhost:8080/' || window.location.href == 'http://localhost:8080/popular' || window.location.href == 'http://localhost:8080/top-rated' || window.location.href == 'http://localhost:8080/upcoming') 
+      if(window.location.href == 'http://localhost:8080/' || window.location.href == 'http://localhost:8080/popular' || window.location.href == 'http://localhost:8080/top-rated' || window.location.href == 'http://localhost:8080/upcoming' || window.location.href == 'https://themoviedbapi.netlify.app/' || window.location.href == 'https://themoviedbapi.netlify.app/popular' || window.location.href == 'https://themoviedbapi.netlify.app/top-rated' || window.location.href == 'https://themoviedbapi.netlify.app/upcoming') 
       {
         return Home
       } else {
