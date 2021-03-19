@@ -1,7 +1,8 @@
 <template>
 <div class='firstMoviePosterBG' :style="
   {
-    backgroundImage: 'url(' + baseImageURL + getMovie.poster_path + ')'
+    backgroundImage: 'url(' + baseImageURL + getMovie.poster_path + ')',
+    height: '300px'
   }
   ">   
 </div>
@@ -30,45 +31,15 @@
       </ul>
   </div>
 
-  <div class='movieInfo'>
-    <img :src="baseImageURL + getMovie.poster_path" alt="">
-    <p id='originalTitle'>{{getMovie.original_title}}</p>
-    <i id='voteStar' class="fas fa-star fa-3x"></i>
-    <p id='voteAverage'>{{getMovie.vote_average}}</p>
-    <p id='voteCount'>{{getMovie.vote_count}} votes</p>
-    <br>
-    <ul class='movieDetails'>
-      <li class='listSpacing' >
-        {{getMovieYear}}
-      </li>
-      <li class='listSpacing' >
-        {{getMovieRunning}}
-      </li>
-      <li class='listSpacing'>
-        {{getMovie.original_language}}
-      </li>
-      <div id='genresContainer'>
-        <div id='genreContainer' v-for='(genre, index) in getMovie.genres' :key='genre'>
-        <li v-if='index != Object.keys(getMovie.genres).length - 1' class='genreName'>
-          {{genre.name}},
-        </li>
-        <li v-else class='genreName'>
-           {{genre.name}}
-        </li>
-      </div>
-      </div>
-
-      </ul>
-
-    <p id='movieOverview'>{{getMovie.overview}}</p>
-  </div>
+  <MovieInfo :baseImageURL="baseImageURL" :getMovie='getMovie' :getMovieYear='getMovieYear' :getMovieRunning='getMovieRunning' />
 
   <div class='castCrewLabels'>
-    <h1>Cast</h1>
-    <h1>Crew</h1>
+
   </div>
 
-  <div class='castCrewMembers'>
+  <div class='castCrewMembers' style='position: relative'>
+    <h1 id='castLabel'>Cast</h1>
+    <h1 id='crewLabel'>Crew</h1>
 
     <div v-for='castMember in getMovieCast' :key='castMember' class='castMember'>
 
@@ -77,7 +48,7 @@
     <p id='characterName'>{{castMember.character}}</p>
     </div>
 
-    <img v-if='baseImageURL + castMember.profile_path == "https://image.tmdb.org/t/p/original/null"' src="https://inspireddentalcare.co.uk/wp-content/uploads/2016/05/Facebook-default-no-profile-pic.jpg" alt="" class='ImageFilter'>
+    <img v-if='baseImageURL + castMember.profile_path == "https://image.tmdb.org/t/p/original/null" || baseImageURL + castMember.profile_path == "https://image.tmdb.org/t/p/original/undefined"' src="https://inspireddentalcare.co.uk/wp-content/uploads/2016/05/Facebook-default-no-profile-pic.jpg" alt="" class='ImageFilter'>
     <img v-else :src="baseImageURL + castMember.profile_path" alt="" class='ImageFilter'>
     </div>
 
@@ -127,10 +98,15 @@ import { useRoute } from 'vue-router'
 import axios from 'axios'
 import env from '@/env.js'
 import { onMounted, ref } from 'vue'
+import MovieInfo from '../components/MovieInfo.vue'
+
 
 
 export default {
   name: 'MovieDetails',
+  components: {
+    MovieInfo
+  },
   setup() {
     const route = useRoute()
     const getId = route.fullPath.slice(15)
@@ -272,6 +248,21 @@ p {
   margin-top: 50px;
 }
 
+#castLabel {
+  position: absolute; 
+  top: -5px; 
+  z-index: 1; 
+  font-weight: 400
+}
+
+#crewLabel {
+  position: absolute; 
+  top: -5px; 
+  left: 688px; 
+  z-index: 1; 
+  font-weight: 400
+}
+
 .toggleHamburgerSpacing {
   position: absolute; 
   bottom: 55%;
@@ -305,6 +296,7 @@ h1 {
 
 .castCrewMembers {
   max-width: 1264px;
+  padding-top: 50px;
   display: flex;
   white-space: nowrap;
   flex-shrink: 0;

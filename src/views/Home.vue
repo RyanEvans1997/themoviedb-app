@@ -114,8 +114,7 @@
 
 <script>
 // @ is an alias to /src
-import { ref, onMounted, onUpdated} from 'vue'
-import env from '@/env.js'
+import { ref, onMounted} from 'vue'
 import axios from 'axios'
 import StarRating from 'vue-star-rating'
 import { useRoute } from 'vue-router'
@@ -133,22 +132,20 @@ export default {
     const firstMovieImg = ref('')
     const firstMovieRating = ref('')
     const firstMovieYear = ref('')
+    const baseImageURL = ref('https://image.tmdb.org/t/p/original/')
     const hamburgerOpen = ref(true)
     const hover = ref(false)
     const currentlyShowing = ref(null)
     const currentSortBy = ref(route.fullPath.slice(1))
+    const getFirstMovie = ref()
     const currentGenre = ref('All Movies')
     const sortBy = ref('')
     const sortByFilters = ref(['popular', 'top rated', 'upcoming'])
-    let sortByMovies = ref([])
+    const sortByMovies = ref([])
+    const categories = ref([])
+    const categoriesRequest = GetRepository.getCatgoriesList()
     let sortByRequest = ref([])
-    let categories = ref([])
-    let categoriesURL = `https://api.themoviedb.org/3/genre/movie/list?api_key=${env.apikey}&language=en-US`
-    const categoriesRequest = axios.get(categoriesURL)
-    const popularMoviesURL = `https://api.themoviedb.org/3/movie/popular?api_key=${env.apikey}&language=en-US&page=1`
-    const topRatedMoviesURL = `https://api.themoviedb.org/3/movie/top_rated?api_key=${env.apikey}&language=en-US&page=1`
-    const upcomingMoviesURL = `https://api.themoviedb.org/3/movie/upcoming?api_key=${env.apikey}&language=en-US&page=1`
-  
+
     sortBy.value = route.params.sortBy;
     currentSortBy.value = route.fullPath.slice(1)
 
@@ -177,19 +174,21 @@ export default {
         const { data: popularMovies } = await GetRepository.getPopularMovies()
         const { data: topRatedMovies } = await GetRepository.getTopRatedMovies()
         const { data: upcomingMovies } = await GetRepository.getUpcomingMovies()
+        const { data: categoriesList } = await GetRepository.getCatgoriesList()
 
         if(route.fullPath.slice(1) == 'popular') {
           return popularMovies
-          console.log(popularMovies)
+
         } else if (route.fullPath.slice(1) == 'top-rated') {
           return topRatedMovies
-          console.log(topRatedMovies)
+
         } else if (route.fullPath.slice(1) == 'upcoming') {
           return upcomingMovies
-          console.log(upcomingMovies)
-        }
 
+        }
       }
+
+
 
       async function getCurrentSortBy() {
       if(route.fullPath.slice(1) == 'popular') {
@@ -259,13 +258,19 @@ export default {
       getCategoryListItem,
       sortByMovies,
       sortByFilters,
-      sortByRequest
+      sortByRequest,
+      getFirstMovie,
+      baseImageURL
       }
   }
 }
 </script>
 
 <style lang='scss'>
+$backgroundColor: #1c212e;
+$activeColor: #5F84EF;
+$yellow: #f3b814;
+
 * {
   margin: 0;
   padding: 0;
@@ -274,7 +279,7 @@ export default {
 }
 
 body {
-  background-color: #1c212e;
+  background-color: $backgroundColor;
   color: #fff; 
 }
 
@@ -285,7 +290,7 @@ body {
 
 a {
   text-decoration: none;
-  color: #1c212e;
+  color: $backgroundColor;
   font-weight: 400;
 }
 
@@ -308,17 +313,17 @@ a {
   }
 
   .activeGenre {
-    color: #5F84EF;
+    color: $activeColor;
   }
 }
 
 .currentGenre {
-  color: #5F84EF;
+  color: $activeColor;
 }
 
 div.categories {
   background-color: #fff;
-  color: #1c212e;
+  color: $backgroundColor;
   display: flex;
   justify-content: space-between;
   font-weight: 300;
@@ -388,14 +393,14 @@ div.categories {
 
 .goToMovieBtn {
   background: none;
-  border: #f3b814 1px solid;
+  border: $yellow 1px solid;
   padding: 5px;
   border-radius: 4px;
-  color: #f3b814;
+  color: $yellow;
   text-decoration: none;
 
   a {
-    color: #f3b814; 
+    color: $yellow; 
     text-decoration: none;
   }
 }
