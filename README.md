@@ -1,19 +1,37 @@
 # themoviedb-app
 
-## Project setup
-```
-npm install
-```
+An example of API handling via use of TMDb API. This implementation was done in vue.js.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+You can find the following TMDb links below:
 
-### Compiles and minifies for production
-```
-npm run build
-```
+TheMovieDB Documentation Link - https://developers.themoviedb.org/
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+TheMovieDB Documentation Link (Movies Direct Link) - https://developers.themoviedb.org/3/movies/get-movie-details
+
+TheMovieDB Base Image URL - https://image.tmdb.org/t/p/original
+
+TheMovieDB Base URL - https://api.themoviedb.org/3/
+
+## How to get an API Key for this project
+
+If you clone this git repo, you will require an account in order to get an API key. To get a key, 
+* Sign up at https://www.themoviedb.org/account/signup
+* Go to your account page, and select the APi section on the left hand side
+* Click the link to generate a new API key
+
+## Further information for setup
+
+* Make sure to create .env files that contains 'VUE_APP_<YourDesiredVariableName>'
+
+## NPM Commands
+
+### Setting up the project
+* npm install
+
+
+### Development Server
+* npm run serve
+
+
+### Production Server
+* npm run build
