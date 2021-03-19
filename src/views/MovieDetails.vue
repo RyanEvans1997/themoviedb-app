@@ -92,7 +92,7 @@
   </div>
 
 </template>
-
+/
 <script>
 import { useRoute } from 'vue-router'
 import axios from 'axios'
