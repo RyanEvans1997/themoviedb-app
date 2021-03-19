@@ -1,4 +1,5 @@
 <template>
+<div v-if='sortByRequest'>
   <div class='firstMoviePosterBG' 
   :style="{
     backgroundImage: 'url(' + firstMovieImg + ')', 
@@ -57,7 +58,7 @@
   </p>
 
   </div>
-    
+  
   </div>
   
 
@@ -104,6 +105,11 @@
 
 
   </div>
+  </div>
+  <div v-else>
+    <p>Loading</p>
+  </div>
+
 </template>
 
 <script>
@@ -113,6 +119,8 @@ import env from '@/env.js'
 import axios from 'axios'
 import StarRating from 'vue-star-rating'
 import { useRoute } from 'vue-router'
+import Repository from '../repositories/RepositoryFactory'
+const GetRepository = Repository.get('getRequests')
 
 export default {
   name: 'Home',
@@ -121,27 +129,28 @@ export default {
   },
   setup() {
     const route = useRoute()
-    let firstMovie = ref('')
-    let firstMovieImg = ref('')
-    let firstMovieRating = ref('')
-    let firstMovieYear = ref('')
-    let hamburgerOpen = ref(true)
-    let hover = ref(false)
-    let currentlyShowing = ref(null)
-    let currentSortBy = ref(route.fullPath.slice(1))
-    let currentGenre = ref('All Movies')
-    let sortBy = ref('')
-    let sortByFilters = ref(['popular', 'top rated', 'upcoming'])
+    const firstMovie = ref('')
+    const firstMovieImg = ref('')
+    const firstMovieRating = ref('')
+    const firstMovieYear = ref('')
+    const hamburgerOpen = ref(true)
+    const hover = ref(false)
+    const currentlyShowing = ref(null)
+    const currentSortBy = ref(route.fullPath.slice(1))
+    const currentGenre = ref('All Movies')
+    const sortBy = ref('')
+    const sortByFilters = ref(['popular', 'top rated', 'upcoming'])
     let sortByMovies = ref([])
     let sortByRequest = ref([])
     let categories = ref([])
     let categoriesURL = `https://api.themoviedb.org/3/genre/movie/list?api_key=${env.apikey}&language=en-US`
-    let categoriesRequest = axios.get(categoriesURL)
-    let popularMoviesURL = `https://api.themoviedb.org/3/movie/popular?api_key=${env.apikey}&language=en-US&page=1`
-    let topRatedMoviesURL = `https://api.themoviedb.org/3/movie/top_rated?api_key=${env.apikey}&language=en-US&page=1`
-    let upcomingMoviesURL = `https://api.themoviedb.org/3/movie/upcoming?api_key=${env.apikey}&language=en-US&page=1`
+    const categoriesRequest = axios.get(categoriesURL)
+    const popularMoviesURL = `https://api.themoviedb.org/3/movie/popular?api_key=${env.apikey}&language=en-US&page=1`
+    const topRatedMoviesURL = `https://api.themoviedb.org/3/movie/top_rated?api_key=${env.apikey}&language=en-US&page=1`
+    const upcomingMoviesURL = `https://api.themoviedb.org/3/movie/upcoming?api_key=${env.apikey}&language=en-US&page=1`
   
     sortBy.value = route.params.sortBy;
+    currentSortBy.value = route.fullPath.slice(1)
 
     function toggleHover (index) {
         hover.value = !hover.value
@@ -164,28 +173,43 @@ export default {
       }
     }
 
-    function getCurrentSortBy() {
+      async function loadRequest() {
+        const { data: popularMovies } = await GetRepository.getPopularMovies()
+        const { data: topRatedMovies } = await GetRepository.getTopRatedMovies()
+        const { data: upcomingMovies } = await GetRepository.getUpcomingMovies()
+
         if(route.fullPath.slice(1) == 'popular') {
-        sortByRequest = axios.get(popularMoviesURL)
-        // console.log('Getting popular')
+          return popularMovies
+          console.log(popularMovies)
+        } else if (route.fullPath.slice(1) == 'top-rated') {
+          return topRatedMovies
+          console.log(topRatedMovies)
+        } else if (route.fullPath.slice(1) == 'upcoming') {
+          return upcomingMovies
+          console.log(upcomingMovies)
+        }
+
+      }
+
+      async function getCurrentSortBy() {
+      if(route.fullPath.slice(1) == 'popular') {
+        sortByRequest = await loadRequest()
+
       } else if (route.fullPath.slice(1) == 'top-rated') {
-        sortByRequest = axios.get(topRatedMoviesURL)
-        // console.log('Getting Top Rated')
+        sortByRequest = await loadRequest()
+
       } else if (route.fullPath.slice(1) == 'upcoming') {
-        sortByRequest = axios.get(upcomingMoviesURL)
-        // console.log('Getting Upcoming')
+        sortByRequest = await loadRequest()
       }
       currentSortBy.value = route.fullPath.slice(1)
     }
 
-    getCurrentSortBy()
 
     function getNewSortBy() {
-      axios.all([categoriesRequest, sortByRequest])
-      .then(axios.spread((data1, data2) => {
-        // console.log(data1.data)
-        // console.log(data2.data)
-        sortByMovies.value = data2.data
+      axios.all([sortByRequest])
+      .then(axios.spread((data2) => {
+
+        sortByMovies.value = data2
         getCategoryListItem()
 
         firstMovie.value = sortByMovies.value.results[0]
@@ -198,12 +222,15 @@ export default {
       .catch(error => console.log(error))
     }
 
-    onMounted(() => {
+    
+    onMounted(async () => {
+        await getCurrentSortBy()
+        loadRequest()
         axios.all([categoriesRequest, sortByRequest])
         .then(axios.spread((data1, data2) => {
           categories.value.push([{name: 'Popular'}, {name: 'Top Rated'}, {name: 'Upcoming'}].concat(data1.data.genres.slice(0, 11).concat({name: 'All Movies'})))
 
-          sortByMovies.value = data2.data
+          sortByMovies.value = data2
 
           firstMovie.value = sortByMovies.value.results[0]
 
@@ -231,7 +258,8 @@ export default {
       currentGenre,
       getCategoryListItem,
       sortByMovies,
-      sortByFilters
+      sortByFilters,
+      sortByRequest
       }
   }
 }
